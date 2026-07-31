@@ -1,0 +1,382 @@
+/* TrustStep Gmail panel — dark navy, matches the web app design */
+
+#truststep-panel {
+  position: fixed;
+  top: 120px;
+  right: 16px;
+  width: 300px;
+  background: #0A0F1E;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(59, 130, 246, 0.1);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13px;
+  color: #fff;
+  z-index: 9999;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#truststep-panel.ts-hidden {
+  opacity: 0;
+  transform: translateX(20px);
+  pointer-events: none;
+}
+
+/* Header */
+.ts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: #050914;
+}
+
+.ts-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #fff;
+}
+
+.ts-logo svg {
+  flex-shrink: 0;
+}
+
+.ts-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.3);
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+
+.ts-close:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Body */
+.ts-body {
+  padding: 16px;
+}
+
+.ts-context-block {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ts-context-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.38);
+  margin-bottom: 6px;
+}
+
+.ts-context-value {
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.72);
+  word-break: break-word;
+}
+
+/* Loading state */
+.ts-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 16px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+}
+
+.ts-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(59, 130, 246, 0.2);
+  border-top-color: #3B82F6;
+  border-radius: 50%;
+  animation: ts-spin 0.7s linear infinite;
+}
+
+@keyframes ts-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Risk badge */
+.ts-risk-card {
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border: 1px solid transparent;
+}
+
+.ts-risk-card.ts-low {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.ts-risk-card.ts-medium {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.ts-risk-card.ts-high {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.ts-risk-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+  opacity: 0.6;
+}
+
+.ts-risk-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.ts-risk-value.ts-low  { color: #34D399; }
+.ts-risk-value.ts-medium { color: #FBBF24; }
+.ts-risk-value.ts-high { color: #F87171; }
+
+/* Reasons */
+.ts-reasons-title {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 8px;
+}
+
+.ts-reasons {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ts-reasons li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.ts-reasons li::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #3B82F6;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+/* CTA button */
+.ts-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.ts-btn-primary {
+  background: #3B82F6;
+  color: #fff;
+}
+
+.ts-btn-primary:hover {
+  background: #2563EB;
+  transform: translateY(-1px);
+}
+
+.ts-btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: 8px;
+}
+
+.ts-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* No-email state */
+.ts-idle {
+  padding: 20px 16px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Divider */
+.ts-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+  margin: 12px 0;
+}
+
+/* Sent confirmation */
+.ts-sent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 0 8px;
+  text-align: center;
+}
+
+.ts-sent-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.ts-sent p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+}
+
+.ts-sent strong {
+  display: block;
+  color: #fff;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+/* Error state */
+.ts-error {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #F87171;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+/* New/unknown sender auto-trigger state */
+.ts-new-sender {
+  padding: 16px 0 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.ts-new-sender-icon {
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+
+.ts-new-sender strong {
+  color: #fff;
+  font-size: 14px;
+}
+
+.ts-new-sender p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.ts-muted {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 11px;
+}
+
+/* Auto-triggered badge */
+.ts-auto-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: #93C5FD;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+
+/* High-risk pulse animation */
+@keyframes ts-pulse-border {
+  0%, 100% { border-color: rgba(239, 68, 68, 0.3); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+  50%       { border-color: rgba(239, 68, 68, 0.8); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.1); }
+}
+
+#truststep-panel.ts-alert {
+  animation: ts-pulse-border 1s ease-in-out 3;
+}
+
+/* Floating trigger button (always visible, bottom-right) */
+#ts-trigger-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #0A0F1E;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+  transition: all 0.2s;
+}
+
+#ts-trigger-btn:hover {
+  border-color: #3B82F6;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25);
+  transform: scale(1.08);
+}

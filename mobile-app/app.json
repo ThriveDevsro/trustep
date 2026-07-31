@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "TrustStep",
+    "slug": "truststep-mobile",
+    "scheme": "truststep",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0f766e"
+      }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "TrustStep potrebuje prístup k fotkám, aby vedel analyzovať screenshoty podvodov."
+        }
+      ]
+    ],
+    "extra": {
+      "apiBaseUrl": "http://192.168.1.228:3000"
+    }
+  }
+}

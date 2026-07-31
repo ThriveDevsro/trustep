@@ -1,0 +1,335 @@
+[
+  {
+    "id": "devreq-61460ddd-22d8-4b52-92a8-f69d85d9a076",
+    "company_id": "11111111-1111-1111-1111-111111111111",
+    "submitted_by": "test@local.dev",
+    "text": "Analyzuj túto webstránku z hľadiska podvodu/phishingu:\n\nURL: https://broverrys.com/?826789a0236e92fcc527847dae9f4816=%7B%7Bcampaign.name%7D%7D&c64d6dd09a191fbaef1a3e6587decac4=Facebook_Mobile_Feed&d7f5d73801f4196f00e6c5b31f8d27351a2df8a8b59a9a7470732eccc9b01c1c=36d1e7e4beab6fd117effac6749b075b8fb417c20b0051a2c74fed658a30f9c47057225be44cd733e074e1a6cc3eb5a9b8490c0ccc9a7ee447eb6953abc09b7da2f9ef18b543830ce9b5b8ed3f20ba97&9338c9f1b1cc977d871a27b23e91cbe7=%7B%7Bcampaign.id%7D%7D&eeaa99e26109e6f8c28724266bde520b=120253311386150583&70b2e68650ac146c22742634aa42cafc=sk_g3_8845&1bcb8b2bfc7a5311a532498e696dc90f=%7B%7Badset.id%7D%7D&f550d3d2ea4b372eb821228d0c5b43a5=%7B%7Badset.name%7D%7D\nPôvodná doména: broverrys.com\nFinálna doména: www.barkerpoland.co.uk\nHeuristic skóre: 17\n⚠️ Redirect: pôvodná doména broverrys.com presmerovala na www.barkerpoland.co.uk\n⚠️ Redirect smeruje na nesúvisiacu cieľovú doménu\n⚠️ Reklamný odkaz končí na generickej homepage\nNadpis stránky: Homepage - Barker Poland\nJazyk stránky: en-GB\n⚠️ Stránka obsahuje leadgen/kontaktný formulár\n⚠️ URL obsahuje reklamné campaign/adset placeholdery\n⚠️ URL obsahuje reklamné tracking znaky platformy Meta/Facebook\n⚠️ URL nesie kombináciu scam typických reklamných a tracking signálov\n⚠️ URL obsahuje 8 netransparentných tracking parametrov\n⚠️ Text alebo titulok stránky používa finančný alebo investičný jazyk\n\nObsah stránky:\nHomepage - Barker Poland Home About History Our Advisers Services Financial Planning Investment Management Our Process Our Fees Contact Client Login Main Menu Home About History Our Advisers Services Financial Planning Investment Management Our Process Our Fees Contact 128 Queen Victoria Street, London, EC4V 4BJ 020 3100 8308 info@barkerpoland.co.uk Your Financial Plan Starts Here Find Out More Expert advice that starts with a free consultation We offer a complimentary meeting where we will discuss your personal situation. Our objective is to understand your aims and aspirations and to identify where you might need help in achieving your financial goals or managing your financial assets. Find Out More Who are Barker Poland? Barker Poland is a firm of professional financial planners and wealth managers whose aim is to provide our clients with high quality advice on all money related matters and build long-standing relationships. We are big on service, mindful of costs and like to keep things as simple as possible. Find Out More What do we do? In short, we help you plan your financial future. As you go through life, your objectives change, there is always a milestone to aim for – whether this is putting money aside for future events, protecting your family or planning for retirement. Whatever stage you are at, we can help you plan and implement a strategy that will help you to achieve your goals. Find Out More Services There are two key aspects to our services – financial planning and investment management - and we provide both on an ongoing basis for a single charge (see Our Fees page for further information). Financial planning focusses on designing and implementing a financial plan, taking account of your current financial position and objectives. Investment management concerns the on-going management of your assets, using our technical knowledge of investments and tax planning to ensure your assets are working as hard as they can for you and remain on course to meet your investment goals. Financial Planning Find Out More Investment Management Find Out More Ready to find out more? We are here to help you achieve your goals. Fill in the contact form and one of our advisers will contact you to see how we can help. Name * Email * Portfolio size Portfolio size &lt; £100k £100k - £250k £250k + Enquiry details * Submit Barker Poland 128 Queen Victoria Street, London, EC4V 4BJ 020 3100 8308 info@barkerpoland.co.uk Services Financial Planning Investment Management About History Our Advisers Privacy Policy Legal Information Accessibility Policy Cookies Web Design by Elephant Digital Cookies on barkerpoland.co.uk We want to give you the best service by using cookies. Carry on browsing if you’re happy with this, or find out how to manage your cookies . --> We are using cookies to give you the best experience on our website. You can find out more about which cookies we are using or switch them off in settings . Essential Cookies Essential Cookies 3rd Party ",
+    "risk_level": "high",
+    "reasons": [
+      "URL sa presmerovala na nesúvisiacu doménu www.barkerpoland.co.uk, čo je pri reklamných a phishing kampaniach silný varovný signál.",
+      "URL obsahuje reklamné template placeholdery typu campaign/adset.",
+      "URL nesie znaky reklamného trackingu z Facebooku/Meta kampaní.",
+      "URL obsahuje veľké množstvo netransparentných tracking parametrov alebo hashovaných identifikátorov.",
+      "Kombinácia ad-tech placeholderov, Meta trackingu a hashovaných parametrov pripomína scam alebo affiliate funnel.",
+      "Landing page kombinuje finančnú ponuku s leadgen formulárom, čo je častý vzorec scam reklám.",
+      "Reklamný redirect vedie na stránku so zberom kontaktov, čo výrazne zvyšuje riziko podvodného funnelu.",
+      "Stránka pracuje s finančnou alebo investičnou ponukou, ktorá si vyžaduje vyššiu opatrnosť."
+    ],
+    "recommendation": "Neinvestujte, neregistrujte sa a nezadávajte kontaktné údaje. Overte si reklamu, verejnú osobu, cieľovú doménu aj firmu mimo pôvodnej platformy.",
+    "status": "pending",
+    "source": "web",
+    "approver_token": "",
+    "created_at": "2026-07-03T23:44:04.485Z"
+  },
+  {
+    "id": "devreq-17b350cf-e28f-46f5-b6a5-68ae02c7dfe4",
+    "company_id": "dev-c54e89d6-42b4-4e4e-a974-c70cb5524ae0",
+    "submitted_by": "test@test.com",
+    "text": "Analyzuj tento screenshot z hľadiska podvodu, phishingu alebo manipulatívnej komunikácie.\n\nTyp a kontext: Screenshot digitálnej komunikácie alebo webového obsahu.\n\nViditeľný text zo screenshotu:\n11:23 N all 5G (24\n\n—_{ Marketingovy dopyt a pon...\n\nC Fy govy dopy Q ©\nInformacie Fotky Podujatia Subory Album\nAh Napiste nieco... RR\n\nNové prispevky Zo:\n\nDominika Fili¢kova i\n\n; 1d-©\nfm HLADA SA PROJEKTOVY MANAZER | PM - BECODE\nV agenture BeCode hladame partaka na projektovy manazment,\nktory prevezme kontrolu nad naSimi projektmi, postara sa... Viac\nProjektovy manazér na IT projekty\n\nbecode.sk\nProjektovy manazZér na IT projekty | BeCode\n\nAdam Brecka a\n\n1d-©\nHladam 5 Iudi, ktorym urobim profi web len za 250€ ¥ (Prvy\nnavrh do 24 hodin)Caute, predt... Viac\n\n°\nEP A ©\nReels Priatelia Skupiny Upozornenia Profil",
+    "risk_level": "low",
+    "reasons": [
+      "Nenašli sa žiadosti o platbu alebo IBAN",
+      "Nenašli sa zmienky o novom dodávateľovi",
+      "Nenašli sa nesúlad domény odosielateľa",
+      "Nenašli sa žiadosti o citlivé údaje alebo prístupy",
+      "Nenašli sa vydávanie sa za autoritu",
+      "Nenašli sa neobvyklé pokyny na prevod"
+    ],
+    "recommendation": "Obsah vyzerá ako bežná sociálna sieťová komunikácia, bez viditeľných známok podvodu alebo phishingu.",
+    "status": "pending",
+    "source": "image",
+    "approver_token": "",
+    "created_at": "2026-06-21T11:03:52.747Z"
+  },
+  {
+    "id": "devreq-2880f2e3-9dce-4c37-95ba-d231ffd3f3b5",
+    "company_id": "dev-c54e89d6-42b4-4e4e-a974-c70cb5524ae0",
+    "submitted_by": "test@test.com",
+    "text": "V zaznamoch o vasom vozidle je uvedena neuhradena pokuta. Odporuca sa okamzita platba, aby sa predislo administrativnemu konaniu.  https://minv.sioei.cfd/sk",
+    "risk_level": "high",
+    "reasons": [
+      "Urgentný jazyk použité v e-maile",
+      "Žiadosti o platbu",
+      "Neobvyklý odkaz na neoverenú stránku",
+      "Vydávanie sa za autoritu"
+    ],
+    "recommendation": "Nereagujte na tento e-mail a skontrolujte informácie o pokute priamo na oficiálnych stránkach alebo kontaktujte relevantnú inštitúciu",
+    "status": "pending",
+    "source": "web",
+    "approver_token": "",
+    "created_at": "2026-06-21T10:16:39.943Z"
+  },
+  {
+    "id": "devreq-08c5092b-f290-4db2-a93d-f72c30f48687",
+    "company_id": "dev-c54e89d6-42b4-4e4e-a974-c70cb5524ae0",
+    "submitted_by": "test@test.com",
+    "text": "Analyzovaná SMS:\nV zaznamoch o vasom vozidle je uvedena neuhradena pokuta. Odporuca sa okamzita platba, aby sa predislo administrativnemu konaniu.  https://minv.sioei.cfd/sk",
+    "risk_level": "high",
+    "reasons": [
+      "Urgentný jazyk použitého v správe",
+      "Žiadost o platbu",
+      "Neobvyklá URL adresa, ktorá môže byť phishingová",
+      "Vydávanie sa za autoritu"
+    ],
+    "recommendation": "Neklikajte na uvedený odkaz a neposielajte žiadne platby. Skontrolujte si záznamy o vozidle priamo na oficiálnych stránkach alebo kontaktujte miestne úrady, aby overili autentickosť správy.",
+    "status": "pending",
+    "source": "web",
+    "approver_token": "",
+    "created_at": "2026-06-21T10:15:08.778Z"
+  },
+  {
+    "id": "devreq-529c1bd8-1b89-4e88-bbf3-d5966523eeaf",
+    "company_id": "dev-c54e89d6-42b4-4e4e-a974-c70cb5524ae0",
+    "submitted_by": "test@test.com",
+    "text": "Analyzovaná SMS:\nV zaznamoch o vasom vozidle je uvedena neuhradena pokuta. Odporuca sa okamzita platba, aby sa predislo administrativnemu konaniu.  https://minv.sioei.cfd/sk",
+    "risk_level": "high",
+    "reasons": [
+      "Urgentný jazyk použitého v správe",
+      "Žiadost o platbu",
+      "Neobvyklá a neuveriteľná URL adresa",
+      "Žiadost o okamžitú platbu bez ďalších informácií"
+    ],
+    "recommendation": "Neklikajte na odkazy v správe a neplatíte žiadne sumy. Skontrolujte si záznamy o vašom vozidle cez oficiálne kanály a overte si informácie o pokutách priamo na úradě.",
+    "status": "pending",
+    "source": "web",
+    "approver_token": "",
+    "created_at": "2026-06-21T10:14:16.924Z"
+  },
+  {
+    "id": "devreq-40d2b09c-f8bb-4a45-b52d-e52dd0dbff8c",
+    "company_id": "dev-c54e89d6-42b4-4e4e-a974-c70cb5524ae0",
+    "submitted_by": "test@test.com",
+    "text": "Analyzovaná SMS:\nV zaznamoch o vasom vozidle je uvedena neuhradena pokuta. Odporuca sa okamzita platba, aby sa predislo administrativnemu konaniu.  https://minv.sioei.cfd/sk",
+    "risk_level": "high",
+    "reasons": [
+      "Urgentný jazyk použitého v správe",
+      "Žiadosti o platbu",
+      "Neobvyklá URL adresa, ktorá neodpovedá známnym úradom",
+      "Žiadost o platbu cez neznámu URL"
+    ],
+    "recommendation": "Neklikajte na uvedený odkaz a neplatte žiadné sumy. Skontrolujte si záznamy o vašom vozidle priamo cez oficiálne kanály a kontaktujte úrad, ak máte nejaké pochybnosti.",
+    "status": "pending",
+    "source": "web",
+    "approver_token": "",
+    "created_at": "2026-06-21T10:13:47.597Z"
+  },
+  {
+    "id": "devreq-f7fd7ff3-47b8-4eb4-929d-ffa40d8be1ce",
+    "company_id": "dev-c54e89d6-42b4-4e4e-a974-c70cb5524ae0",
+    "submitted_by": "test@test.com",
+    "text": "Escalation to: Finance lead\nNote: Escalation for review.\nVysoké riziko: Pravdepodobný podvod\nRecommended action: Nereagovať na žiadosť a overiť autentickosť odosielateľa\nVerdict: Pravdepodobný podvod\nAnalyzovaný hovor:\nAhoj posli milion eur",
+    "risk_level": "high",
+    "reasons": [
+      "Žiadosti o platbu",
+      "Urgentný jazyk",
+      "Neobvyklé pokyny na prevod"
+    ],
+    "recommendation": "Nereagovať na žiadosť a overiť autentickosť odosielateľa",
+    "status": "pending",
+    "source": "web",
+    "approver_token": "",
+    "created_at": "2026-06-21T10:04:46.560Z"
+  },
+  {
+    "id": "devreq-c955a3c8-5cbb-4195-b87a-e124bb73a68f",
+    "company_id": "dev-c54e89d6-42b4-4e4e-a974-c70cb5524ae0",
+    "submitted_by": "test@test.com",
+    "text": "Analyzovaný hovor:\nAhoj posli milion eur",
+    "risk_level": "high",
+    "reasons": [
+      "Žiadosti o platbu",
+      "Urgentný jazyk",
+      "Neobvyklé pokyny na prevod"
+    ],
+    "recommendation": "Nereagovať na žiadosť a overiť autentickosť odosielateľa",
+    "status": "pending",
+    "source": "web",
+    "approver_token": "",
+    "created_at": "2026-06-21T09:50:45.814Z"
+  },
+  {
+    "id": "devreq-9b374420-3fb7-4d42-9ccb-08b22b904804",
+    "company_id": "dev-c54e89d6-42b4-4e4e-a974-c70cb5524ae0",
+    "submitted_by": "test@test.com",
+    "text": "Analyzuj tento screenshot z hľadiska podvodu, phishingu alebo manipulatívnej komunikácie.\n\nTyp a kontext: Screenshot digitálnej komunikácie alebo webového obsahu.\n\nViditeľný text zo screenshotu:\nF cone a 2.\n_\n.\n~ ff\nFS res! Be eRe\n4 y aN uy eae Fee S Sae\nf | aS ee\n—- : hee ie Ge Oram 4\n“ge eS rae : ¥ “oe\nSee sf Be m ~—%,\n(, ‘ ¥ ee 3 as — q\n, % 4 b 4 ‘ ‘s . 7\n2 eaiye oN % i? i eee:\nes a. . : Pj\n\\ + 4 ets if 4\n- s ol eos Be en.\n’ 4 Ba Be tik tag ee te SS f. ~ er z viet A: eae\n= ee a an ee ~ A ‘ Fe . q — : Pos aS",
+    "risk_level": "low",
+    "reasons": [
+      "Nedostatočné informácie o obsahu",
+      "Žiadny evidentný urgentný jazyk alebo žiadosti o platbu",
+      "Nedostatočné údaje o novom dodávateľovi alebo nesúlade domény",
+      "Žiadne žiadosti o citlivé údaje alebo prístupy",
+      "Nedostatočné údaje o vydávaní sa za autoritu",
+      "Nedostatočné údaje o neobvyklých pokynoch na prevod"
+    ],
+    "recommendation": "Nie je možné určiť presné riziko podvodu, pretože obsah screenshotu je nečitateľný a neobsahuje žiadne relevantné informácie. Odporúčame overiť pôvod a autentickosť komunikácie a prijať opatrnosť pri ďalších krokoch.",
+    "status": "pending",
+    "source": "image",
+    "approver_token": "",
+    "created_at": "2026-06-21T09:50:19.337Z"
+  },
+  {
+    "id": "devreq-ce377077-74b7-4e97-ab64-032ed7d234ab",
+    "company_id": "dev-c54e89d6-42b4-4e4e-a974-c70cb5524ae0",
+    "submitted_by": "test@test.com",
+    "text": "Ahoj neposles mi 100€ a udaje o ucte",
+    "risk_level": "high",
+    "reasons": [
+      "Žiadosti o platbu",
+      "Žiadosti o citlivé údaje (údaje o účte)",
+      "Neobvyklé pokyny na prevod (neposlanie peňazí)"
+    ],
+    "recommendation": "Nereagovať na žiadosť a overiť totožnosť odosielateľa",
+    "status": "pending",
+    "source": "web",
+    "approver_token": "",
+    "created_at": "2026-06-14T15:33:29.207Z"
+  },
+  {
+    "id": "devreq-c4475d11-7a4c-48bf-93bb-f96db119f613",
+    "company_id": "dev-c54e89d6-42b4-4e4e-a974-c70cb5524ae0",
+    "submitted_by": "test@test.com",
+    "text": "Escalation to: Finance lead\nNote: Escalation for review.\nVysoké riziko: Pravdepodobný podvod\nRecommended action: Nereagujte na túto správu a nezasielajte žiadne citlivé údaje, pretože sa jedná o pokus o podvod alebo phishing\nVerdict: Pravdepodobný podvod\nScreenshot:\n7:20 HO m& e Su! ED\n= nn\n\nNahlasit, ze nejde o spam 6)\nS poteSenim vam oznamujeme, Ze ste boli\nvybrani na ziskanie penaznej kompenzacie vo\nvysSke 3 000 000,00 EUR (tri milidny eur) od\nKomisie pre kompenzacie Eurdpskej Unie na\nrozvoj podnikania a infraStruktury vo vaSom\nregione, Cim sa znizi miera chudoby a vytvoria\nsa nové pracovné miesta pre obCanov.\nOdpovedzte pre viac informacii\nCelé meno:\nAdresa:\nKopia platného obcianskeho preukazu ako\ndoklad\nTelefonne Cislo\nUdaje o bankovom ucte\nS pozdravom,\nUrsula von der Leyen\nPrezidentka Eurdpskej unie\n\nlI O <",
+    "risk_level": "high",
+    "reasons": [
+      "žiadosti o citlivé údaje ako meno, adresa, kópia občianskeho preukazu a údaje o bankovom účte",
+      "vydávanie sa za autoritu (Ursula von der Leyen, Prezidentka Európskej únie)",
+      "nesúlad medzi obsahom a pravdepodobnosťou, že by Európska únia komunikovala takýmto spôsobom",
+      "žiadosti o platbu alebo údaje o bankovom účte",
+      "neobvyklé pokyny na prevod alebo získanie finančnej kompenzácie"
+    ],
+    "recommendation": "Nereagujte na túto správu a nezasielajte žiadne citlivé údaje, pretože sa jedná o pokus o podvod alebo phishing",
+    "status": "pending",
+    "source": "web",
+    "approver_token": "",
+    "created_at": "2026-06-14T15:30:43.628Z"
+  },
+  {
+    "id": "devreq-40f859e2-33c5-4b17-909c-0e907f41f128",
+    "company_id": "dev-c54e89d6-42b4-4e4e-a974-c70cb5524ae0",
+    "submitted_by": "test@test.com",
+    "text": "Analyzuj tento screenshot z hľadiska podvodu, phishingu alebo manipulatívnej komunikácie.\n\nTyp a kontext: Screenshot digitálnej komunikácie alebo webového obsahu.\n\nVizuálne rizikové signály: zmienka o verejnej osobe alebo autorite\n\nViditeľný text zo screenshotu:\n7:20 HO m& e Su! ED\n= nn\n\nNahlasit, ze nejde o spam 6)\nS poteSenim vam oznamujeme, Ze ste boli\nvybrani na ziskanie penaznej kompenzacie vo\nvysSke 3 000 000,00 EUR (tri milidny eur) od\nKomisie pre kompenzacie Eurdpskej Unie na\nrozvoj podnikania a infraStruktury vo vaSom\nregione, Cim sa znizi miera chudoby a vytvoria\nsa nové pracovné miesta pre obCanov.\nOdpovedzte pre viac informacii\nCelé meno:\nAdresa:\nKopia platného obcianskeho preukazu ako\ndoklad\nTelefonne Cislo\nUdaje o bankovom ucte\nS pozdravom,\nUrsula von der Leyen\nPrezidentka Eurdpskej unie\n\nlI O <",
+    "risk_level": "high",
+    "reasons": [
+      "žiadosti o citlivé údaje ako meno, adresa, kópia občianskeho preukazu a údaje o bankovom účte",
+      "vydávanie sa za autoritu (Ursula von der Leyen, Prezidentka Európskej únie)",
+      "nesúlad medzi obsahom a pravdepodobnosťou, že by Európska únia komunikovala takýmto spôsobom",
+      "žiadosti o platbu alebo údaje o bankovom účte",
+      "neobvyklé pokyny na prevod alebo získanie finančnej kompenzácie"
+    ],
+    "recommendation": "Nereagujte na túto správu a nezasielajte žiadne citlivé údaje, pretože sa jedná o pokus o podvod alebo phishing.",
+    "status": "pending",
+    "source": "image",
+    "approver_token": "",
+    "created_at": "2026-06-14T15:29:55.964Z"
+  },
+  {
+    "id": "devreq-edf54f19-3c7b-4ae5-b7a1-21f2a021d060",
+    "company_id": "dev-c0fe0804-4c17-411c-86f0-5bcb5b71f6e0",
+    "submitted_by": "ios-demo@truststep.local",
+    "text": "Urgent: zaplaťte faktúru dnes na nový IBAN a nepotvrdzujte to telefonicky.",
+    "risk_level": "high",
+    "reasons": [
+      "Urgentný jazyk",
+      "Žiadosti o platbu na nový IBAN",
+      "Žiadosti o neuvedenie informácií telefonicky"
+    ],
+    "recommendation": "Neprosecujte platbu a skontrolujte autentickosť správy cez iný komunikačný kanál",
+    "status": "pending",
+    "source": "web",
+    "approver_token": "",
+    "created_at": "2026-06-12T19:08:10.284Z"
+  },
+  {
+    "id": "devreq-c7c64aa2-220d-46a1-8da3-ce09a37a302f",
+    "company_id": "dev-0c2f2b33-82ac-455f-8660-37309a6cbda9",
+    "submitted_by": "finance@example.com",
+    "text": "Analyzovaný inbound e-mail:\nInbox: finance@example.com\nPredmet: Urgent: zmena účtu dodávateľa\nOd: billing-update@vendor-finance-mail.com\n\nDobrý deň, z technických dôvodov sme zmenili bankový účet. Prosíme uhradiť najbližšiu faktúru na nový IBAN dnes do 14:00. Odpovedzte len na tento e-mail a nepotvrdzujte to cez pôvodné číslo.",
+    "risk_level": "high",
+    "reasons": [
+      "Urgentný jazyk v predmete a v tele e-mailu",
+      "Žiadosti o platbu na nový IBAN",
+      "Žiadosti o rýchlu reakciu a platbu do určitého času",
+      "Nesúlad domény odosielateľa a pôvodného dodávateľa",
+      "Žiadosti o nepotvrdenie informácií cez pôvodné číslo"
+    ],
+    "recommendation": "Nereagujte na tento e-mail a skontrolujte informácie o zmene účtu dodávateľa cez oficiálne kanály a overené kontakty.",
+    "status": "pending",
+    "source": "email",
+    "approver_token": "",
+    "created_at": "2026-06-12T12:54:01.106Z"
+  },
+  {
+    "id": "devreq-ef50dab7-76f4-4a31-8d3d-14ec2d0441d3",
+    "company_id": "dev-c54e89d6-42b4-4e4e-a974-c70cb5524ae0",
+    "submitted_by": "test@test.com",
+    "text": "Analyzuj túto webstránku z hľadiska podvodu/phishingu:\n\nURL: https://broverrys.com/?826789a0236e92fcc527847dae9f4816=%7B%7Bcampaign.name%7D%7D&c64d6dd09a191fbaef1a3e6587decac4=Facebook_Mobile_Feed&d7f5d73801f4196f00e6c5b31f8d27351a2df8a8b59a9a7470732eccc9b01c1c=36d1e7e4beab6fd117effac6749b075b8fb417c20b0051a2c74fed658a30f9c47057225be44cd733e074e1a6cc3eb5a9b8490c0ccc9a7ee447eb6953abc09b7da2f9ef18b543830ce9b5b8ed3f20ba97&9338c9f1b1cc977d871a27b23e91cbe7=%7B%7Bcampaign.id%7D%7D&eeaa99e26109e6f8c28724266bde520b=120253311386150583&70b2e68650ac146c22742634aa42cafc=sk_g3_8845&1bcb8b2bfc7a5311a532498e696dc90f=%7B%7Badset.id%7D%7D&f550d3d2ea4b372eb821228d0c5b43a5=%7B%7Badset.name%7D%7D\nFinálna doména: epfinance.sk\n⚠️ Redirect: pôvodná doména broverrys.com presmerovala na epfinance.sk\nNadpis stránky: EP. — Финансовый консалтинг в Словакии | Евгений Пономарёв\n⚠️ Stránka obsahuje leadgen/kontaktný formulár\n⚠️ URL obsahuje reklamné campaign/adset placeholdery\n⚠️ URL obsahuje reklamné tracking znaky platformy Meta/Facebook\n⚠️ URL obsahuje 8 netransparentných tracking parametrov\n⚠️ Text alebo titulok stránky používa finančný alebo investičný jazyk\n\nObsah stránky:\nEP. — Финансовый консалтинг в Словакии | Евгений Пономарёв К основному содержимому EP . Обо мне Услуги Инструменты 🧮 Калькулятор налогов SZČO ⚖️ Živnosť vs s.r.o. vs TPP 📄 Генератор инвойсов ⚠️ Калькулятор штрафов Блог Контакт Записаться Открою živnosť, настрою учёт и объясню всё по-человечески Ты приехал в Словакию строить бизнес, а не разбираться в бюрократии. Я возьму это на себя. Бесплатная консультация Написать в WhatsApp А М Д Е О Уже помог 50+ предпринимателям 📄 DPH 🧾 Faktúra 📋 Živnosť 📝 IČO 📃 Daň 📑 Zmluva 🗂️ Odvody 📊 Report EVGENII PONOMAREV BRATISLAVA, SLOVAKIA EP. 2026 Привет, я Евгений 👋 Финансист, выпускник Univerzity Komenského, с опытом работы как в корпорациях (Deutsche Telekom, Arval Slovakia), так и в стартапах. Прошёл через весь процесс сам — от регистрации первой živnosťi до daňového priznania. Теперь помогаю другим не наступать на те же грабли. 🎓 Магистр финансов, FM UK 🌍 RU / SK / EN 📍 Братислава Почему я, а не бухгалтерская контора? Бухгалтерская контора EP. Формальное общение на словацком ✅ Объясняю по-человечески, без жаргона Ответ через неделю по email ✅ Ответ в WhatsApp за час Только ведение учёта ✅ Стратегия + учёт + помощь с документами На твоём языке Русский, украинский, английский, словацкий — говорю как тебе удобно. Быстро и без очередей Ответ в WhatsApp за час, не за неделю. Понятные объяснения Никакого бухгалтерского жаргона. Объясню как другу. Полное сопровождение От идеи до первого отчёта. Просто и понятно. Что я делаю Комплексное сопровождение для предпринимателей в Словакии 📋 Открытие živnosť Подберу виды деятельности, подготовлю документы, зарегистрирую. Ты подписываешь — я делаю остальное. Подробнее 📊 Ведение учёта Jednoduché účtovníctvo, zamestnanci, daňové priznanie. Ты занимаешься бизнесом — я считаю цифры. Подробнее 💡 Финансовая стратегия Paušálne výdavky или s.r.o.? Сколько платить в poisťovňu? Разберёмся вместе. Подробнее 🚀 Бизнес-консультация Запускаешь проект в Словакии? Помогу со структурой, бюджетом ",
+    "risk_level": "high",
+    "reasons": [
+      "URL sa presmerovala z domény broverrys.com na inú doménu epfinance.sk.",
+      "URL obsahuje reklamné template placeholdery typu campaign/adset.",
+      "URL nesie znaky reklamného trackingu z Facebooku/Meta kampaní.",
+      "URL obsahuje viacero netransparentných tracking parametrov alebo hashovaných identifikátorov.",
+      "Landing page kombinuje finančnú ponuku s leadgen formulárom, čo je častý vzorec scam reklám.",
+      "Stránka pracuje s finančnou alebo investičnou ponukou, ktorá si vyžaduje vyššiu opatrnosť.",
+      "Stránka obsahuje leadgen/kontaktný formulár, čo môže byť použité na získanie citlivých údajov",
+      "URL obsahuje reklamné campaign/adset placeholdery a tracking znaky platformy Meta/Facebook, čo môže byť použité na sledovanie používateľov"
+    ],
+    "recommendation": "Neinvestujte ani nezadávajte kontaktné údaje. Overte si reklamu, verejnú osobu aj cieľovú doménu mimo pôvodnej platformy.",
+    "status": "pending",
+    "source": "web",
+    "approver_token": "",
+    "created_at": "2026-06-12T12:42:59.000Z"
+  },
+  {
+    "id": "devreq-aa0cb128-afb8-41cd-b498-41267bf64d63",
+    "company_id": "dev-de4fed78-36ac-4e06-acb0-78fd524ad2bf",
+    "submitted_by": "finance@demo.sk",
+    "text": "Analyzovaný inbound e-mail:\nInbox: finance@demo.sk\nPredmet: Urgent: zmena účtu dodávateľa\nOd: billing-update@vendor-finance-mail.com\n\nDobrý deň, z technických dôvodov sme zmenili bankový účet. Prosíme uhradiť najbližšiu faktúru na nový IBAN dnes do 14:00. Odpovedzte len na tento e-mail a nepotvrdzujte to cez pôvodné číslo.",
+    "risk_level": "high",
+    "reasons": [
+      "Urgentný jazyk v predmete a texte",
+      "Žiadosti o platbu na nový IBAN",
+      "Nesúlad domény odosielateľa a pôvodného dodávateľa",
+      "Žiadosti o rýchlu reakciu a platbu do určitého času",
+      "Neobvyklé pokyny na komunikáciu"
+    ],
+    "recommendation": "Nereagovať na tento e-mail a overiť informácie o zmene účtu dodávateľa cez iné oficiálne kanály",
+    "status": "pending",
+    "source": "email",
+    "approver_token": "",
+    "created_at": "2026-06-12T12:40:30.322Z"
+  },
+  {
+    "id": "devreq-2a36e9b5-f81d-4086-b1e5-5c53e6ceacd7",
+    "company_id": "dev-06035d9d-0bb8-4f12-b875-03fa6ead9be1",
+    "submitted_by": "shared-demo@example.com",
+    "text": "Test urgentnej platby na nový IBAN",
+    "risk_level": "high",
+    "reasons": [
+      "Urgentný jazyk",
+      "Žiadosti o platbu alebo IBAN",
+      "Zmienky o novom dodávateľovi"
+    ],
+    "recommendation": "Overiť autentickosť správy a IBAN uvedený v správe so zodpovedajúcim oddelením alebo osobou v spoločnosti, predtým než sa vykoná akákoľvek platba.",
+    "status": "pending",
+    "source": "web",
+    "approver_token": "",
+    "created_at": "2026-06-12T11:57:29.690Z"
+  },
+  {
+    "id": "devreq-3b2dee45-0847-4c17-a56d-b4e9f17f7247",
+    "company_id": "dev-06035d9d-0bb8-4f12-b875-03fa6ead9be1",
+    "submitted_by": "shared-demo@example.com",
+    "text": "Test urgentnej platby na nový IBAN",
+    "risk_level": "high",
+    "reasons": [
+      "urgentný jazyk",
+      "žiadosti o platbu alebo IBAN"
+    ],
+    "recommendation": "Overiť autentickosť správy a neposkytnúť žiadne citlivé údaje alebo informácie o platbách",
+    "status": "pending",
+    "source": "web",
+    "approver_token": "",
+    "created_at": "2026-06-12T11:57:21.623Z"
+  }
+]

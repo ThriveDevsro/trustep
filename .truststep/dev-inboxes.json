@@ -1,0 +1,42 @@
+[
+  {
+    "id": "devinbox-b25428d7-bc9a-4432-b977-6292db8c135a",
+    "company_id": "dev-de4fed78-36ac-4e06-acb0-78fd524ad2bf",
+    "provider": "gmail",
+    "email_address": "finance@demo.sk",
+    "display_name": "Fakturacia",
+    "connection_method": "oauth",
+    "status": "connected",
+    "scan_mode": "auto",
+    "imap_host": null,
+    "imap_port": null,
+    "imap_secure": null,
+    "last_checked_at": "2026-06-12T12:40:30.325Z",
+    "last_error": null,
+    "created_at": "2026-06-12T12:40:28.528Z",
+    "updated_at": "2026-06-12T12:40:30.325Z",
+    "imap_username": null,
+    "imap_password": null,
+    "demo_seed_index": 1
+  },
+  {
+    "id": "devinbox-7c975124-570b-4824-9bd6-f2da030ef43c",
+    "company_id": "dev-0c2f2b33-82ac-455f-8660-37309a6cbda9",
+    "provider": "gmail",
+    "email_address": "finance@example.com",
+    "display_name": null,
+    "connection_method": "oauth",
+    "status": "connected",
+    "scan_mode": "auto",
+    "imap_host": null,
+    "imap_port": null,
+    "imap_secure": null,
+    "last_checked_at": "2026-06-12T12:54:01.108Z",
+    "last_error": null,
+    "created_at": "2026-06-12T12:54:00.102Z",
+    "updated_at": "2026-06-12T12:54:01.108Z",
+    "imap_username": null,
+    "imap_password": null,
+    "demo_seed_index": 1
+  }
+]

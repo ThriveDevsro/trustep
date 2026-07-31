@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TailCRM Dashboard</title>
+    <style>
+        :root {
+            --bg-dark: #090606;
+            --bg-main: #F4F6F9;
+            --bg-card: #FFFFFF;
+            --text-dark: #090606;
+            --text-muted: #64748B;
+            --primary-blue: #2563EB;
+            --primary-light: #EFF6FF;
+            --border-color: #E2E8F0;
+            --badge-green-bg: #DCFCE7;
+            --badge-green-txt: #15803D;
+            --badge-red-bg: #FEE2E2;
+            --badge-red-txt: #B91C1C;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Ľavé Menu - Tmavo čierne (#090606) */
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-dark);
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo {
+            padding: 24px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .logo-box {
+            width: 34px;
+            height: 34px;
+            background-color: var(--primary-blue);
+            color: #FFFFFF;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+
+        .menu-title {
+            padding: 16px 20px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+        }
+
+        .nav-item a:hover {
+            color: #FFFFFF;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item.active a {
+            color: #FFFFFF;
+            background-color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+        }
+
+        /* Main Workspace */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 14px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .search-input-box {
+            position: relative;
+            width: 380px;
+        }
+
+        .search-input-box input {
+            width: 100%;
+            padding: 9px 14px 9px 38px;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
+        }
+
+        .user-info-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--primary-blue);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* Content Layout */
+        .content {
+            padding: 28px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        /* KPI Cards Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .kpi-val {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .kpi-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .badge-green {
+            background-color: var(--badge-green-bg);
+            color: var(--badge-green-txt);
+            font-weight: 700;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .badge-red {
+            background-color: var(--badge-red-bg);
+            color: var(--badge-red-txt);
+            font-weight: 700;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        /* 2-Column Grid (Main Dashboard) */
+        .grid-main {
+            display: grid;
+            grid-template-columns: 2.2fr 1.1fr;
+            gap: 20px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            background-color: var(--bg-main);
+            padding: 3px;
+            border-radius: 8px;
+            gap: 2px;
+        }
+
+        .tab-btn {
+            border: none;
+            background: transparent;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background-color: var(--bg-card);
+            color: var(--text-dark);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        /* Gauge Arc Chart */
+        .gauge-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 140px;
+            margin: 10px 0 20px;
+        }
+
+        .gauge-center-text {
+            position: absolute;
+            bottom: 10px;
+            text-align: center;
+        }
+
+        .progress-bar-row {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .progress-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .bar-bg {
+            height: 6px;
+            width: 100px;
+            background-color: var(--bg-main);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background-color: var(--primary-blue);
+        }
+
+        /* Donut Chart Legend */
+        .donut-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            height: 180px;
+        }
+
+        .legend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        /* Task Schedule List */
+        .schedule-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .schedule-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .schedule-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .schedule-time {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            background-color: var(--primary-light);
+            padding: 4px 8px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ľavá Navigácia (#090606) -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-box">T</div>
+            <span>TailAdmin</span>
+        </div>
+
+        <div class="menu-title">MENU</div>
+        <ul class="nav-list">
+            <li class="nav-item active">
+                <a href="#">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                    Kontakty
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"></path><path d="M3 7v14"></path><path d="M13 3v18"></path></svg>
+                    Spoločnosti
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                    Obchody (Dealy)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    Analytika
+                </a>
+            </li>
+        </ul>
+
+        <div class="menu-title" style="margin-top: auto;">NASTAVENIA</div>
+        <ul class="nav-list" style="margin-bottom: 20px;">
+            <li class="nav-item">
+                <a href="#">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    Nastavenia
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Hlavný Workspace -->
+    <div class="main-wrapper">
+        <header class="top-bar">
+            <div class="search-input-box">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" placeholder="Vyhľadať v CRM alebo zadať príkaz... (⌘K)">
+            </div>
+            <div class="user-info-area">
+                <div style="text-align: right;">
+                    <div style="font-size: 13px; font-weight: 700;">Peter K.</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Administrátor</div>
+                </div>
+                <div class="avatar">PK</div>
+            </div>
+        </header>
+
+        <main class="content">
+            <!-- 3 KPI Karty Hore -->
+            <section class="kpi-grid">
+                <div class="card">
+                    <div class="kpi-val">120 369 €</div>
+                    <div class="kpi-row">
+                        <span>Aktívne Obchody</span>
+                        <span class="badge-green">+20% oproti min. mesiacu</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="kpi-val">234 210 €</div>
+                    <div class="kpi-row">
+                        <span>Celkový Obrat</span>
+                        <span class="badge-green">+9.0% oproti min. mesiacu</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="kpi-val">874</div>
+                    <div class="kpi-row">
+                        <span>Uzavreté Dealy</span>
+                        <span class="badge-red">-4.5% oproti min. mesiacu</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Riadok 1: Dvojitý líniový graf & Gauge meter -->
+            <section class="grid-main">
+                <div class="card">
+                    <div class="chart-header">
+                        <div>
+                            <h3 style="font-size: 16px; font-weight: 700;">Štatistika predaja</h3>
+                            <p style="font-size: 12px; color: var(--text-muted);">Cieľ nastavený pre každý mesiac</p>
+                        </div>
+                        <div class="filter-tabs">
+                            <button class="tab-btn active">Mesačne</button>
+                            <button class="tab-btn">Kvartálne</button>
+                            <button class="tab-btn">Ročne</button>
+                        </div>
+                    </div>
+
+                    <!-- Duálny líniový graf (TailAdmin presná kópia) -->
+                    <svg viewBox="0 0 500 150" style="width: 100%; height: 210px; overflow: visible;">
+                        <defs>
+                            <linearGradient id="blueArea" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#2563EB" stop-opacity="0.25"/>
+                                <stop offset="100%" stop-color="#2563EB" stop-opacity="0.0"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- Plocha pod hornou čiarou -->
+                        <path d="M0,60 L45,55 L90,65 L135,75 L180,70 L225,75 L270,55 L315,35 L360,50 L405,30 L450,28 L500,32 L500,150 L0,150 Z" fill="url(#blueArea)" />
+                        <!-- Horná tmavomodrá čiara -->
+                        <path d="M0,60 L45,55 L90,65 L135,75 L180,70 L225,75 L270,55 L315,35 L360,50 L405,30 L450,28 L500,32" fill="none" stroke="#2563EB" stroke-width="2.5" />
+                        <!-- Spodná svetlá čiara -->
+                        <path d="M0,120 L45,130 L90,110 L135,120 L180,110 L225,125 L270,100 L315,90 L360,85 L405,70 L450,60 L500,65" fill="none" stroke="#93C5FD" stroke-width="2" />
+                    </svg>
+                </div>
+
+                <!-- Odhadovaný zisk (Gauge Arc Meter) -->
+                <div class="card">
+                    <h3 style="font-size: 16px; font-weight: 700;">Odhadované Tržby</h3>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Cieľ pre mesiac Jún</p>
+
+                    <div class="gauge-container">
+                        <svg viewBox="0 0 100 50" style="width: 180px;">
+                            <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#E2E8F0" stroke-width="8" stroke-linecap="round"/>
+                            <path d="M 10 50 A 40 40 0 0 1 78 22" fill="none" stroke="#2563EB" stroke-width="8" stroke-linecap="round"/>
+                        </svg>
+                        <div class="gauge-center-text">
+                            <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Júnový cieľ</span>
+                            <div style="font-size: 24px; font-weight: 800;">90 000 €</div>
+                        </div>
+                    </div>
+
+                    <div class="progress-bar-row">
+                        <div class="progress-item">
+                            <div>
+                                <div style="font-weight: 600;">Marketing</div>
+                                <div style="font-size: 11px; color: var(--text-muted);">30 569,00 €</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div class="bar-bg"><div class="bar-fill" style="width: 85%;"></div></div>
+                                <span style="font-weight: 700;">85%</span>
+                            </div>
+                        </div>
+
+                        <div class="progress-item">
+                            <div>
+                                <div style="font-weight: 600;">Predajný tím</div>
+                                <div style="font-size: 11px; color: var(--text-muted);">20 486,00 €</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div class="bar-bg"><div class="bar-fill" style="width: 55%; opacity: 0.7;"></div></div>
+                                <span style="font-weight: 700;">55%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Riadok 2: Koláčový graf & Program -->
+            <section class="grid-main">
+                <!-- Koláčový Graf -->
+                <div class="card">
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 4px;">Kategórie predaja</h3>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Distribúcia zákazníkov</p>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center;">
+                        <div class="donut-wrapper">
+                            <svg viewBox="0 0 36 36" style="width: 140px; height: 140px; transform: rotate(-90deg);">
+                                <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#E2E8F0" stroke-width="4.5"/>
+                                <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#2563EB" stroke-width="4.5" stroke-dasharray="48, 100"/>
+                                <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#60A5FA" stroke-width="4.5" stroke-dasharray="33, 100" stroke-dashoffset="-48"/>
+                                <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#93C5FD" stroke-width="4.5" stroke-dasharray="19, 100" stroke-dashoffset="-81"/>
+                            </svg>
+                            <div style="position: absolute; text-align: center;">
+                                <div style="font-size: 20px; font-weight: 800;">2,450</div>
+                                <div style="font-size: 11px; color: var(--text-muted);">Celkovo</div>
+                            </div>
+                        </div>
+
+                        <div class="legend-list">
+                            <div class="legend-item">
+                                <span><span class="dot" style="background-color: #2563EB;"></span>Partneri</span>
+                                <strong>48% &bull; 2 040 ks</strong>
+                            </div>
+                            <div class="legend-item">
+                                <span><span class="dot" style="background-color: #60A5FA;"></span>Priamy nákup</span>
+                                <strong>33% &bull; 1 402 ks</strong>
+                            </div>
+                            <div class="legend-item">
+                                <span><span class="dot" style="background-color: #93C5FD;"></span>Marketing</span>
+                                <strong>19% &bull; 510 ks</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plánované Úlohy -->
+                <div class="card">
+                    <h3 style="font-size: 16px; font-weight: 700;">Plánované stretnutia</h3>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Program na najbližšie dni</p>
+
+                    <div class="schedule-list">
+                        <div class="schedule-item">
+                            <div class="schedule-time">St, 11 Jan &bull; 09:20</div>
+                            <div>
+                                <div style="font-size: 13px; font-weight: 700;">Prezentácia pre Business Analytics</div>
+                                <div style="font-size: 11px; color: var(--text-muted);">Diskusia o nových možnostiach CRM dát +6 ďalších</div>
+                            </div>
+                        </div>
+
+                        <div class="schedule-item">
+                            <div class="schedule-time">Pi, 15 Feb &bull; 10:35</div>
+                            <div>
+                                <div style="font-size: 13px; font-weight: 700;">Business Sprint Workshop</div>
+                                <div style="font-size: 11px; color: var(--text-muted);">Review obchodného tímu za Q1</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+</body>
+</html>

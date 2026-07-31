@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply relative overflow-x-hidden bg-white text-slate-900 antialiased;
+    font-family: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Sora', 'Plus Jakarta Sans', 'Inter', sans-serif;
+  }
+}
+
+@layer utilities {
+  .gradient-border {
+    border: 1px solid transparent;
+    background: linear-gradient(#0A0F1E, #0A0F1E) padding-box,
+      linear-gradient(135deg, #14B8A6, #0F766E) border-box;
+  }
+
+  .hero-glow {
+    background: radial-gradient(circle at top, rgba(20, 184, 166, 0.24), transparent 64%);
+  }
+
+  .hero-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: linear-gradient(to bottom, black, transparent 85%);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  .section-label {
+    @apply text-xs font-extrabold uppercase tracking-[0.2em] text-emerald-800;
+  }
+
+  .form-label {
+    @apply grid gap-2 text-xs font-extrabold text-slate-700;
+  }
+
+  .form-input {
+    @apply w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-semibold text-slate-950 outline-none transition placeholder:font-medium placeholder:text-slate-400 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10;
+  }
+
+  .enterprise-label {
+    @apply text-xs font-bold uppercase tracking-[0.2em] text-[#0876e8];
+  }
+
+}
+
+/* Product workspace: calmer geometry than the marketing site, with hierarchy
+   carried by spacing and borders instead of floating card shadows. */
+.workspace-surface [class*='shadow-'] {
+  box-shadow: none !important;
+}
+
+.workspace-surface .rounded-3xl,
+.workspace-surface .rounded-2xl {
+  border-radius: 0.625rem !important;
+}
+
+.workspace-surface {
+  --workspace-orange: #ff4f00;
+}
