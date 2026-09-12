@@ -3,6 +3,7 @@ create table if not exists companies (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   approver_email text not null,
+  plan text not null default 'free' check (plan in ('free', 'plus', 'team')),
   created_at timestamptz default now()
 );
 
@@ -75,8 +76,11 @@ alter table requests enable row level security;
 alter table connected_inboxes enable row level security;
 alter table alert_deliveries enable row level security;
 
--- Public read policy for approver links (token-based access handled in API)
-create policy "Allow public read on requests" on requests for select using (true);
-create policy "Allow public insert on requests" on requests for insert with check (true);
-create policy "Allow public update on requests" on requests for update using (true);
-create policy "Allow public read on companies" on companies for select using (true);
+create policy "Users can read own company" on companies
+  for select using (auth.uid() = id);
+create policy "Users can update own company" on companies
+  for update using (auth.uid() = id) with check (auth.uid() = id);
+create policy "Users can read own requests" on requests
+  for select using (auth.uid() = company_id);
+create policy "Users can read own inboxes" on connected_inboxes
+  for select using (auth.uid() = company_id);

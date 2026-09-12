@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Webhook } from 'svix'
-import { analyzeForFraud } from '@/lib/ai'
+import { analyzeForFraudResilient } from '@/lib/ai'
 import {
   buildEmailAnalysisText,
   extractEmailAddress,
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
     const companyId = resolveInboundCompanyId(email.to)
     const submittedBy = extractEmailAddress(email.from)
     const text = buildEmailAnalysisText(email)
-    const analysis = await analyzeForFraud(text)
+    const analysis = await analyzeForFraudResilient(text)
     const approverToken = generateToken()
 
     const { data: company } = await supabase

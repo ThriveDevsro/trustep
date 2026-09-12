@@ -1,4 +1,4 @@
-const TRUSTSTEP_APP_URL = 'http://localhost:3000'
+const FEELSODD_APP_URL = 'http://localhost:3000'
 const DEMO_COMPANY_ID = '00000000-0000-0000-0000-000000000001'
 
 const MENU_IDS = {
@@ -12,19 +12,19 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({
       id: MENU_IDS.selection,
-      title: 'Analyzovať označený text v TrustStep',
+      title: 'Analyzovať označený text v FeelsOdd',
       contexts: ['selection'],
     })
 
     chrome.contextMenus.create({
       id: MENU_IDS.link,
-      title: 'Skontrolovať tento link v TrustStep',
+      title: 'Skontrolovať tento link v FeelsOdd',
       contexts: ['link'],
     })
 
     chrome.contextMenus.create({
       id: MENU_IDS.page,
-      title: 'Analyzovať túto stránku v TrustStep',
+      title: 'Analyzovať túto stránku v FeelsOdd',
       contexts: ['page'],
       documentUrlPatterns: ['http://*/*', 'https://*/*'],
     })
@@ -99,13 +99,13 @@ chrome.action.onClicked.addListener(async (tab) => {
     return
   }
 
-  await chrome.tabs.create({ url: `${TRUSTSTEP_APP_URL}/submit` })
+  await chrome.tabs.create({ url: `${FEELSODD_APP_URL}/submit` })
 })
 
 async function triggerEmailAnalysis(tabId) {
   const handled = await sendTabMessage(tabId, { type: 'truststep:analyze-email' })
   if (!handled) {
-    await chrome.tabs.create({ url: `${TRUSTSTEP_APP_URL}/submit` })
+    await chrome.tabs.create({ url: `${FEELSODD_APP_URL}/submit` })
   }
 }
 
@@ -128,7 +128,7 @@ async function analyzeSelectedText(tab, selectedText) {
     })
 
     const fallbackUrl = result.id
-      ? `${TRUSTSTEP_APP_URL}/report/${result.id}`
+      ? `${FEELSODD_APP_URL}/report/${result.id}`
       : buildSubmitUrl({
           tab: 'email',
           shared_text: trimmed,
@@ -142,7 +142,7 @@ async function analyzeSelectedText(tab, selectedText) {
         targetLabel: 'Označený text',
         targetValue: trimmed,
         result,
-        ctaLabel: result.id ? 'Otvoriť celý report →' : 'Otvoriť v TrustStep →',
+        ctaLabel: result.id ? 'Otvoriť celý report →' : 'Otvoriť v FeelsOdd →',
         ctaHref: fallbackUrl,
       },
     })
@@ -181,7 +181,7 @@ async function analyzeUrlTarget(tab, url, context) {
     })
 
     const fallbackUrl = result.id
-      ? `${TRUSTSTEP_APP_URL}/report/${result.id}`
+      ? `${FEELSODD_APP_URL}/report/${result.id}`
       : buildSubmitUrl({
           tab: 'url',
           shared_url: url,
@@ -195,7 +195,7 @@ async function analyzeUrlTarget(tab, url, context) {
         targetLabel: context.targetLabel,
         targetValue: context.targetValue,
         result,
-        ctaLabel: result.id ? 'Otvoriť celý report →' : 'Otvoriť v TrustStep →',
+        ctaLabel: result.id ? 'Otvoriť celý report →' : 'Otvoriť v FeelsOdd →',
         ctaHref: fallbackUrl,
       },
     })
@@ -228,7 +228,7 @@ async function sendOrOpenError(tabId, payload) {
 }
 
 async function postJson(path, body) {
-  const response = await fetch(`${TRUSTSTEP_APP_URL}${path}`, {
+  const response = await fetch(`${FEELSODD_APP_URL}${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -236,14 +236,14 @@ async function postJson(path, body) {
 
   const payload = await response.json().catch(() => ({}))
   if (!response.ok) {
-    throw new Error(payload?.error || `TrustStep API returned ${response.status}`)
+    throw new Error(payload?.error || `FeelsOdd API returned ${response.status}`)
   }
 
   return payload
 }
 
 function buildSubmitUrl(params) {
-  const url = new URL('/submit', TRUSTSTEP_APP_URL)
+  const url = new URL('/submit', FEELSODD_APP_URL)
   for (const [key, value] of Object.entries(params)) {
     if (value) {
       url.searchParams.set(key, value)
@@ -263,7 +263,7 @@ function getErrorMessage(error) {
     return error.message
   }
 
-  return 'Nepodarilo sa spojiť s TrustStep API.'
+  return 'Nepodarilo sa spojiť s FeelsOdd API.'
 }
 
 function sendTabMessage(tabId, message) {

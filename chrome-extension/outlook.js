@@ -137,7 +137,7 @@ function createPanel() {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
           <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" fill="#3B82F6"/>
         </svg>
-        TrustStep
+        FeelsOdd
       </div>
       <button class="ts-close" id="ts-close-btn" title="Zavrieť">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -215,7 +215,7 @@ function showResult({ riskLevel, reasons, requestId, senderEmail, autoTriggered 
     ${reasonsHtml}
     <div class="ts-divider"></div>
     <a href="${reportHref}" target="_blank" rel="noopener noreferrer" class="ts-btn ts-btn-primary">
-      ${requestId ? 'Otvoriť celý report' : 'Otvoriť v TrustStep'}
+      ${requestId ? 'Otvoriť celý report' : 'Otvoriť v FeelsOdd'}
     </a>
     ${secondaryCtaHtml}
   `);
@@ -228,7 +228,7 @@ function showResult({ riskLevel, reasons, requestId, senderEmail, autoTriggered 
 
 function showError() {
   setBody(`
-    <div class="ts-error">Nepodarilo sa spojiť s TrustStep API.<br>Skontrolujte či beží localhost:3000.</div>
+    <div class="ts-error">Nepodarilo sa spojiť s FeelsOdd API.<br>Skontrolujte či beží localhost:3000.</div>
     <button class="ts-btn ts-btn-secondary" id="ts-retry-btn" style="margin-top:8px">Skúsiť znova</button>
   `);
   document.getElementById('ts-retry-btn')?.addEventListener('click', () => analyzeEmail({ force: true }));
@@ -288,7 +288,7 @@ async function analyzeEmail({ autoTriggered = false, force = false } = {}) {
     }
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError') return;
-    console.error('[TrustStep Outlook]', error);
+    console.error('[FeelsOdd Outlook]', error);
     showError();
   }
 }
@@ -313,7 +313,7 @@ function createTriggerButton() {
 
   const button = document.createElement('button');
   button.id = 'ts-trigger-btn';
-  button.title = 'TrustStep — analyzovať e-mail v Outlooku';
+  button.title = 'FeelsOdd — analyzovať e-mail v Outlooku';
   button.innerHTML = `
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
       <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" fill="#3B82F6"/>

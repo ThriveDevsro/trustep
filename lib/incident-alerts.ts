@@ -111,7 +111,7 @@ export async function maybeSendIncidentAlert({
   const sourceLabel = SOURCE_LABELS[source]
   const channel = getWebhookKind(webhookUrl)
   const destination = getWebhookDestination(webhookUrl)
-  const title = `TrustStep incident: ${riskLabel} riziko`
+  const title = `FeelsOdd incident: ${riskLabel} riziko`
   const summary = [
     companyName ? `Účet: ${companyName}` : '',
     `Zdroj: ${sourceLabel}`,
@@ -133,7 +133,7 @@ export async function maybeSendIncidentAlert({
           sections: [
             {
               facts: [
-                { name: 'Firma', value: companyName || 'TrustStep účet' },
+                { name: 'Firma', value: companyName || 'FeelsOdd účet' },
                 { name: 'Zdroj', value: sourceLabel },
                 { name: 'Riziko', value: riskLabel },
                 { name: 'Status', value: status },
@@ -162,7 +162,7 @@ export async function maybeSendIncidentAlert({
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: `*Firma:* ${companyName || 'TrustStep účet'}\n*Zdroj:* ${sourceLabel}\n*Odosielateľ:* ${submittedBy}${phoneFrom ? `\n*Číslo:* ${phoneFrom}` : ''}\n*Status:* ${status}\n*Riziko:* ${riskLabel}`,
+                text: `*Firma:* ${companyName || 'FeelsOdd účet'}\n*Zdroj:* ${sourceLabel}\n*Odosielateľ:* ${submittedBy}${phoneFrom ? `\n*Číslo:* ${phoneFrom}` : ''}\n*Status:* ${status}\n*Riziko:* ${riskLabel}`,
               },
             },
             {

@@ -1,73 +1,106 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { notFound, useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { AnalysisInsights } from '@/components/AnalysisInsights'
-import { SourceBadge } from '@/components/SourceBadge'
-import { StatusBadge } from '@/components/StatusBadge'
-import { deriveAccountNameFromEmail } from '@/lib/app-auth'
-import { getLocalRequestById } from '@/lib/local-history'
-import type { Request } from '@/lib/types'
-import { Clock, User, Calendar, Building2, Hash } from 'lucide-react'
+import Link from "next/link";
+import { notFound, useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ReportIdentityInsights } from "@/components/ReportIdentityInsights";
+import { SourceBadge } from "@/components/SourceBadge";
+import { StatusBadge } from "@/components/StatusBadge";
+import { deriveAccountNameFromEmail } from "@/lib/app-auth";
+import { getLocalRequestById } from "@/lib/local-history";
+import type { Request } from "@/lib/types";
+import { Clock, User, Calendar, Building2, Hash } from "lucide-react";
 
 type RequestDetail = {
-  icon: JSX.Element
-  label: string
-  value: string | JSX.Element
-}
+  icon: JSX.Element;
+  label: string;
+  value: string | JSX.Element;
+};
 
 export default function LocalReportPage() {
-  const params = useParams<{ id: string }>()
-  const [request, setRequest] = useState<Request | null | undefined>(undefined)
+  const params = useParams<{ id: string }>();
+  const [request, setRequest] = useState<Request | null | undefined>(undefined);
 
   useEffect(() => {
     if (!params?.id) {
-      setRequest(null)
-      return
+      setRequest(null);
+      return;
     }
 
-    setRequest(getLocalRequestById(params.id))
-  }, [params])
+    setRequest(getLocalRequestById(params.id));
+  }, [params]);
 
   if (request === undefined) {
     return (
-      <div className="min-h-screen bg-navy-800 flex items-center justify-center text-white/70">
-        Načítavam lokálny report...
+      <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC] text-slate-500">
+        Načítavam Trust report…
       </div>
-    )
+    );
   }
 
   if (!request) {
-    notFound()
+    notFound();
   }
 
-  const formattedDate = new Date(request.created_at).toLocaleString('sk-SK', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+  const formattedDate = new Date(request.created_at).toLocaleString("sk-SK", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   const details: RequestDetail[] = [
-    { icon: <User className="w-4 h-4" />, label: 'Odosielateľ', value: request.submitted_by },
-    { icon: <Building2 className="w-4 h-4" />, label: 'Zdroj', value: <SourceBadge source={request.source} /> },
-    { icon: <Calendar className="w-4 h-4" />, label: 'Dátum', value: formattedDate },
-    { icon: <Clock className="w-4 h-4" />, label: 'Stav', value: <StatusBadge status={request.status} /> },
-    ...(request.phone_from ? [{ icon: <Hash className="w-4 h-4" />, label: 'Telefón', value: request.phone_from }] : []),
-    { icon: <Building2 className="w-4 h-4" />, label: 'Účet', value: deriveAccountNameFromEmail(request.submitted_by) },
-  ]
+    {
+      icon: <User className="w-4 h-4" />,
+      label: "Odosielateľ",
+      value: request.submitted_by,
+    },
+    {
+      icon: <Building2 className="w-4 h-4" />,
+      label: "Zdroj",
+      value: <SourceBadge source={request.source} />,
+    },
+    {
+      icon: <Calendar className="w-4 h-4" />,
+      label: "Dátum",
+      value: formattedDate,
+    },
+    {
+      icon: <Clock className="w-4 h-4" />,
+      label: "Stav",
+      value: <StatusBadge status={request.status} />,
+    },
+    ...(request.phone_from
+      ? [
+          {
+            icon: <Hash className="w-4 h-4" />,
+            label: "Telefón",
+            value: request.phone_from,
+          },
+        ]
+      : []),
+    {
+      icon: <Building2 className="w-4 h-4" />,
+      label: "Účet",
+      value: deriveAccountNameFromEmail(request.submitted_by),
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-navy-800">
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+    <div className="min-h-screen bg-[#F8FAFC]">
+      <main className="mx-auto max-w-4xl px-5 py-12 sm:px-8 lg:py-16">
         <div className="flex items-start justify-between mb-8 gap-4">
           <div>
-            <Link href="/dashboard" className="text-sm text-white/40 hover:text-white/70 transition-colors mb-2 inline-block">
-              ← Dashboard
+            <Link
+              href="/dashboard"
+              className="mb-2 inline-block text-sm text-slate-500 transition-colors hover:text-[#2563EB]"
+            >
+              ← Späť na prehľad
             </Link>
-            <h1 className="text-2xl font-bold text-white">Lokálna správa o riziku</h1>
+            <h1 className="font-display text-3xl font-semibold tracking-[-.05em] text-[#020617]">
+              Trust report
+            </h1>
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <SourceBadge source={request.source} />
               <StatusBadge status={request.status} />
@@ -76,34 +109,42 @@ export default function LocalReportPage() {
         </div>
 
         <div className="mb-6">
-          <AnalysisInsights
+          <ReportIdentityInsights
+            requestId={request.id}
             riskLevel={request.risk_level}
             reasons={request.reasons ?? []}
             recommendation={request.recommendation}
-            tone="dark"
+            contentText={request.text}
+            trustedIdentityId={request.trusted_identity_id}
+            identityStatus={request.identity_status}
+            identityComparison={request.identity_comparison}
           />
         </div>
 
-        <div className="bg-navy-700/40 border border-white/5 rounded-2xl p-6 mb-6">
-          <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider mb-4">Analyzovaný text</h2>
-          <pre className="text-sm text-white/60 whitespace-pre-wrap font-mono leading-relaxed max-h-64 overflow-y-auto">
+        <div className="mb-8 border-y border-slate-200 py-6">
+          <h2 className="mb-4 text-sm font-semibold text-[#020617]">
+            Analyzovaný obsah
+          </h2>
+          <pre className="max-h-64 overflow-y-auto whitespace-pre-wrap font-mono text-sm leading-relaxed text-slate-600">
             {request.text}
           </pre>
         </div>
 
-        <div className="bg-navy-700/40 border border-white/5 rounded-2xl p-6">
-          <h2 className="text-sm font-semibold text-white/70 uppercase tracking-wider mb-4">Detaily žiadosti</h2>
+        <div className="border-t border-slate-200 pt-6">
+          <h2 className="mb-4 text-sm font-semibold text-[#020617]">
+            Detaily overenia
+          </h2>
           <dl className="space-y-3">
             {details.map(({ icon, label, value }) => (
-              <div key={label} className="flex items-center gap-3 text-sm">
-                <span className="text-white/30">{icon}</span>
-                <span className="text-white/40 w-28">{label}</span>
-                <span className="text-white/80">{value}</span>
+              <div key={label} className="flex items-center gap-3 border-b border-slate-100 py-2 text-sm">
+                <span className="text-slate-300">{icon}</span>
+                <span className="w-28 text-slate-500">{label}</span>
+                <span className="font-medium text-[#0F172A]">{value}</span>
               </div>
             ))}
           </dl>
         </div>
       </main>
     </div>
-  )
+  );
 }

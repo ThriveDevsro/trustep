@@ -1,202 +1,161 @@
-'use client'
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Check, Globe2, Mail, MessageSquareText } from "lucide-react";
 
-import Link from 'next/link'
-import { ArrowRight, CheckCircle, HeartHandshake, Mail, MessageSquare, Phone, Shield } from 'lucide-react'
-
-const USE_CASES = [
+const SCENARIOS = [
   {
-    icon: MessageSquare,
-    title: 'Podozrivé SMS a kuriérske správy',
-    description:
-      'Správy o balíku, nedoplatku alebo overení účtu patria medzi najčastejšie podvody na bežných používateľov.',
+    icon: MessageSquareText,
+    title: "Správa o balíku alebo nedoplatku",
+    text: "Vyzerá bežne, ale núti vás kliknúť a zaplatiť malú sumu ešte dnes.",
+    href: "/vyskusat?tab=sms",
   },
   {
     icon: Mail,
-    title: 'Falošné e-maily od banky alebo služby',
-    description:
-      'Podvodné e-maily sa tvária dôveryhodne a tlačia na prihlásenie, potvrdenie údajov alebo zaplatenie poplatku.',
+    title: "E-mail z banky alebo služby",
+    text: "Pozná vaše meno a používa správne logo. Odosielateľ alebo odkaz však môžu byť iné.",
+    href: "/vyskusat?tab=email",
   },
   {
-    icon: Phone,
-    title: 'Telefonáty a hlasové nátlakové scenáre',
-    description:
-      'Volajúci sa vydáva za banku, kuriéra alebo člena rodiny a snaží sa vyvolať stres, autoritu a rýchlu reakciu.',
+    icon: Globe2,
+    title: "Odkaz z bazára alebo sociálnej siete",
+    text: "Kupujúci vás presúva mimo platformy alebo odkaz vedie na falošnú platobnú stránku.",
+    href: "/vyskusat?tab=url",
   },
-] as const
+];
 
-const BENEFITS = [
-  'druhý názor pred kliknutím alebo odoslaním platby',
-  'zrozumiteľné vysvetlenie bez bezpečnostného žargónu',
-  'vhodné aj pre rodičov, seniorov a menej technických používateľov',
-  'rýchle použitie bez komplikovaného nastavovania',
-] as const
-
-const WHEN_TO_USE = [
-  'keď si nie ste istý, či správa patrí banke alebo kuriérovi',
-  'keď vás niekto tlačí na rýchlu reakciu, klik alebo platbu',
-  'keď marketplace komunikácia posiela na externý link',
-  'keď chcete ukázať rodičom alebo známym, prečo je správa podozrivá',
-] as const
+const POINTS = [
+  "Správy, chaty a sociálne siete",
+  "Odkazy, e-shopy a prihlasovacie stránky",
+  "Tvrdené identity firiem, značiek a odosielateľov",
+  "PDF, faktúry, prílohy a screenshoty",
+];
 
 export default function ForPeoplePage() {
   return (
-    <div className="min-h-screen bg-[#f5f8f7] selection:bg-teal-500 selection:text-white">
-      <main>
-        <section className="border-b border-slate-200 bg-white py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
-              <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-teal-100 bg-teal-50 px-4 py-2 text-sm font-semibold text-teal-800">
-                  <HeartHandshake className="h-4 w-4" />
-                  Pre ľudí
-                </div>
-                <h1 className="mt-6 max-w-4xl text-4xl font-extrabold tracking-tight text-slate-950 sm:text-6xl lg:leading-[0.98]">
-                  Druhý názor pred kliknutím, odpoveďou alebo odoslaním peňazí
-                </h1>
-                <p className="mt-6 max-w-2xl text-base font-medium leading-relaxed text-slate-600 sm:text-xl">
-                  Nie každý podvod cieli na firmu. Veľká časť útokov ide po bežných ľuďoch cez SMS, bazáre, bankové výzvy,
-                  kuriérske správy alebo hlasové manipulácie. TrustStep má pomáhať aj tam.
-                </p>
-
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                  <Link
-                    href="/submit"
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-teal-600 px-7 py-4 text-sm font-extrabold text-white transition-colors hover:bg-teal-700"
-                  >
-                    Spustiť analýzu
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                  <Link
-                    href="/register"
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-7 py-4 text-sm font-extrabold text-slate-950 transition-colors hover:bg-slate-50"
-                  >
-                    Vytvoriť účet
-                  </Link>
-                </div>
-              </div>
-
-              <div className="grid gap-0 border-y border-slate-200">
-                <div className="py-7">
-                  <div className="text-xs font-black uppercase tracking-[0.18em] text-teal-700">Kedy to pomáha najviac</div>
-                  <h2 className="mt-3 max-w-lg text-2xl font-extrabold tracking-tight text-slate-950">
-                    Najväčší zmysel to má v momente neistoty, nie až po tom, čo sa stane chyba
-                  </h2>
-                  <div className="mt-5 grid gap-3">
-                    {WHEN_TO_USE.map((item) => (
-                      <div key={item} className="flex items-start gap-3 text-sm font-semibold leading-relaxed text-slate-700">
-                        <span className="mt-1.5 h-2.5 w-2.5 rounded-full bg-teal-600" />
-                        <span>{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="border-t border-slate-200 py-7">
-                  <div className="text-xs font-black uppercase tracking-[0.18em] text-teal-700">Čo dostanete</div>
-                  <h2 className="mt-3 max-w-lg text-2xl font-extrabold tracking-tight text-slate-950">
-                    Jednoduchý verdict, dôvody a ďalší krok bez zbytočného žargónu
-                  </h2>
-                  <p className="mt-4 max-w-xl text-sm font-medium leading-relaxed text-slate-600">
-                    Cieľom nie je vystrašiť používateľa. Cieľom je pomôcť mu pokojne sa zastaviť a spraviť správne rozhodnutie.
-                  </p>
-                </div>
-              </div>
+    <div className="bg-white text-[#0F172A]">
+      <section className="relative min-h-[680px] overflow-hidden bg-[#1264F3] text-white sm:min-h-[720px]">
+        <div className="absolute inset-y-0 right-0 w-full lg:w-[58%]">
+          <Image
+            src="/truststep-human-hero-v1.png"
+            alt="Používateľka si overuje nečakanú správu"
+            fill
+            priority
+            sizes="(max-width: 1024px) 100vw, 58vw"
+            className="object-cover object-[67%_50%]"
+          />
+        </div>
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,#1264F3_0%,#1264F3_43%,rgba(18,100,243,.48)_66%,rgba(18,100,243,.05)_100%)]" />
+        <div className="relative mx-auto flex min-h-[680px] max-w-[1240px] items-center px-5 py-20 sm:min-h-[720px] sm:px-8">
+          <div className="max-w-[650px]">
+            <h1 className="text-balance font-display text-5xl font-semibold leading-[.98] tracking-[-.06em] sm:text-6xl lg:text-[74px]">
+              Zistite, kto sa vám ozýva, skôr než zareagujete
+            </h1>
+            <p className="mt-7 max-w-[570px] text-lg leading-8 text-blue-50">
+              FEELSODD posúdi, za koho sa správa vydáva, čo od vás žiada a či
+              je bezpečné kliknúť, odpovedať alebo zaplatiť.
+            </p>
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/vyskusat"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-white px-6 text-sm font-semibold text-[#1747B8]"
+              >
+                Overiť komunikáciu <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/cennik"
+                className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/65 px-6 text-sm font-semibold text-white"
+              >
+                Pozrieť plány
+              </Link>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="bg-white py-12 sm:py-16">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <div className="mb-8 max-w-2xl">
-              <div className="text-xs font-black uppercase tracking-[0.18em] text-teal-700">Najčastejšie scenáre</div>
-              <h2 className="mt-3 text-2xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
-                Podvody, ktoré bežní ľudia riešia každý týždeň
-              </h2>
-            </div>
+      <section className="mx-auto max-w-[1240px] px-5 py-20 sm:px-8 sm:py-28">
+        <div className="grid gap-8 lg:grid-cols-[1fr_.85fr] lg:items-end">
+          <h2 className="max-w-3xl text-balance font-display text-4xl font-semibold leading-[1.03] tracking-[-.055em] sm:text-5xl">
+            Podvod sa často tvári ako obyčajný deň
+          </h2>
+          <p className="max-w-lg text-base leading-8 text-slate-600 lg:justify-self-end">
+            Balík, banka, bazár alebo „podpora“. FEELSODD overí konkrétne
+            tvrdenie a požiadavku — nie abstraktnú hrozbu.
+          </p>
+        </div>
+        <div className="mt-14 grid border-y border-slate-200 md:grid-cols-3 md:divide-x md:divide-slate-200">
+          {SCENARIOS.map(({ icon: Icon, title, text, href }) => (
+            <article key={title} className="flex min-h-[330px] flex-col py-8 md:px-8">
+              <Icon className="h-7 w-7 text-[#2563EB]" strokeWidth={1.7} />
+              <h3 className="mt-8 text-2xl font-semibold leading-8">{title}</h3>
+              <p className="mt-4 text-sm leading-7 text-slate-600">{text}</p>
+              <Link
+                href={href}
+                className="mt-auto inline-flex items-center gap-2 pt-8 text-sm font-semibold text-[#2563EB]"
+              >
+                Overiť <ArrowRight className="h-4 w-4" />
+              </Link>
+            </article>
+          ))}
+        </div>
+      </section>
 
-            <div className="grid gap-6 md:grid-cols-3">
-              {USE_CASES.map((item) => {
-                const Icon = item.icon
-
-                return (
-                  <div key={item.title} className="rounded-[1.75rem] border border-slate-200 bg-[#f8fbfa] p-6 shadow-[0_16px_50px_rgba(15,23,42,0.05)]">
-                    <div className="inline-flex items-center justify-center rounded-2xl bg-teal-100 p-3 text-teal-700">
-                      <Icon className="h-6 w-6" />
-                    </div>
-                    <h2 className="mt-5 text-xl font-extrabold text-slate-950">{item.title}</h2>
-                    <p className="mt-3 text-sm font-medium leading-relaxed text-slate-600">{item.description}</p>
-                  </div>
-                )
-              })}
-            </div>
+      <section className="bg-[#111318] text-white">
+        <div className="mx-auto grid max-w-[1240px] gap-12 px-5 py-20 sm:px-8 sm:py-28 lg:grid-cols-[1.08fr_.92fr] lg:items-center lg:gap-20">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-3xl">
+            <Image
+              src="/truststep-human-hero-v1.png"
+              alt="Žena pokojne kontroluje správu v telefóne"
+              fill
+              sizes="(max-width: 1024px) 100vw, 55vw"
+              className="object-cover object-[64%_50%]"
+            />
           </div>
-        </section>
-
-        <section className="bg-[#eef5f3] py-12 sm:py-16">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
-              <div>
-                <div className="inline-flex items-center gap-2 text-teal-700">
-                  <Shield className="h-4 w-4" />
-                  <span className="text-sm font-semibold uppercase tracking-wider">Prečo to funguje</span>
-                </div>
-                <h2 className="mt-5 text-2xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
-                  Dáva to zmysel presne vtedy, keď nechcete veriť panike ani vlastnému stresu
-                </h2>
-                <p className="mt-4 max-w-2xl text-sm font-medium leading-relaxed text-slate-600 sm:text-base">
-                  Namiesto rýchleho rozhodnutia si dáte obsah preveriť a dostanete jednoduché odporúčanie.
-                  To je často rozdiel medzi pokojom a drahou chybou.
-                </p>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                {BENEFITS.map((item) => (
-                  <div key={item} className="rounded-2xl border border-slate-200 bg-white p-5">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-                      <p className="text-sm font-semibold leading-relaxed text-slate-700">{item}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div>
+            <h2 className="text-balance font-display text-4xl font-semibold leading-[1.03] tracking-[-.055em] sm:text-5xl">
+              Pomôžte aj rodičom bez toho, aby ste boli stále na telefóne
+            </h2>
+            <p className="mt-6 text-base leading-8 text-slate-300">
+              Každý člen rodiny môže podnet overiť samostatne a výsledok vám
+              poslať vtedy, keď potrebuje druhý názor.
+            </p>
+            <ul className="mt-9 border-t border-white/20">
+              {POINTS.map((point) => (
+                <li
+                  key={point}
+                  className="flex items-center gap-3 border-b border-white/20 py-4 text-sm font-medium"
+                >
+                  <Check className="h-4 w-4 text-[#60A5FA]" /> {point}
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/cennik"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#60A5FA]"
+            >
+              Pozrieť rodinný plán <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="bg-white py-12 sm:py-16">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <div className="rounded-[2rem] border border-slate-200 bg-slate-950 px-6 py-8 text-white shadow-[0_20px_70px_rgba(15,23,42,0.12)] sm:px-8">
-              <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-                <div>
-                  <div className="text-xs font-black uppercase tracking-[0.18em] text-teal-300">Máte podozrivú správu už teraz?</div>
-                  <h3 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">
-                    Skopírujte text alebo vložte link a nechajte si ho vyhodnotiť bez zložitého procesu
-                  </h3>
-                  <p className="mt-3 max-w-2xl text-sm font-medium leading-relaxed text-white/70 sm:text-base">
-                    TrustStep je postavený tak, aby fungoval aj pre menej technických používateľov a aj v strese.
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap gap-4">
-                  <Link
-                    href="/submit"
-                    className="inline-flex items-center gap-2 rounded-2xl bg-teal-500 px-6 py-4 text-sm font-extrabold text-white transition-colors hover:bg-teal-400"
-                  >
-                    Spustiť analýzu
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                  <Link
-                    href="/link-check"
-                    className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-sm font-extrabold text-white transition-colors hover:bg-white/10"
-                  >
-                    Overiť link
-                  </Link>
-                </div>
-              </div>
-            </div>
+      <section className="bg-[#E8F0FF] px-5 py-16 sm:px-8 sm:py-20">
+        <div className="mx-auto flex max-w-[1240px] flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <h2 className="max-w-4xl text-balance font-display text-4xl font-semibold leading-[1.03] tracking-[-.055em] sm:text-5xl">
+              Máte podozrivú správu už teraz?
+            </h2>
+            <p className="mt-4 text-base text-slate-700">
+              Vložte ju do FEELSODD a rozhodnite sa až po overení.
+            </p>
           </div>
-        </section>
-      </main>
+          <Link
+            href="/vyskusat"
+            className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#2563EB] px-6 text-sm font-semibold text-white"
+          >
+            Overiť komunikáciu <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
     </div>
-  )
+  );
 }

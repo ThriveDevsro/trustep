@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     const originalText = String(body.originalText || '').trim()
     const note = String(body.note || '').trim()
     const recipient = String(body.recipient || 'Approver').trim()
-    const verdict = String(body.verdict || 'TrustStep incident').trim()
+    const verdict = String(body.verdict || 'FeelsOdd incident').trim()
     const reasons = cleanList(body.reasons)
     const doNow = cleanList(body.doNow)
 

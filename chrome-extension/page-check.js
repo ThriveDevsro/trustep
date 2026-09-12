@@ -1,4 +1,4 @@
-// TrustStep page-check content script
+// FeelsOdd page-check content script
 // Runs on all non-Gmail pages. Shows a floating button to analyze the current page.
 
 const APP_URL = 'http://localhost:3000'
@@ -58,7 +58,7 @@ function createPanel() {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
           <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" fill="#3B82F6"/>
         </svg>
-        TrustStep
+        FeelsOdd
       </div>
       <button class="ts-close" id="ts-close-btn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -170,13 +170,13 @@ function showResult({ riskLevel, reasons, recommendation, ctaHref, ctaLabel, tar
   }
 }
 
-function showError({ message = 'Nepodarilo sa spojiť s TrustStep API.<br>Skontrolujte či beží localhost:3000.', targetLabel = '', fallbackUrl = '', retryAction = true }) {
+function showError({ message = 'Nepodarilo sa spojiť s FeelsOdd API.<br>Skontrolujte či beží localhost:3000.', targetLabel = '', fallbackUrl = '', retryAction = true }) {
   ensurePanel()
   setBody(`
     ${renderContextMeta(targetLabel, '')}
     <div class="ts-error">${message}</div>
     ${retryAction ? '<button class="ts-btn ts-btn-secondary" id="ts-retry-btn" style="margin-top:8px">Skúsiť znova</button>' : ''}
-    ${fallbackUrl ? `<a href="${escAttr(fallbackUrl)}" target="_blank" rel="noopener noreferrer" class="ts-btn ts-btn-secondary">Otvoriť v TrustStep →</a>` : ''}
+    ${fallbackUrl ? `<a href="${escAttr(fallbackUrl)}" target="_blank" rel="noopener noreferrer" class="ts-btn ts-btn-secondary">Otvoriť v FeelsOdd →</a>` : ''}
   `)
   document.getElementById('ts-retry-btn')?.addEventListener('click', () => analyzeCurrentPage(true))
   showPanel()
@@ -207,10 +207,10 @@ async function analyzeCurrentPage(showLoadingState = false) {
       targetLabel: 'Aktuálna stránka',
       targetValue: location.href,
       ctaHref: data.id ? `${APP_URL}/report/${data.id}` : `${APP_URL}/submit?tab=url&shared_url=${encodeURIComponent(location.href)}&submitted_by=${encodeURIComponent('Browser Extension')}`,
-      ctaLabel: data.id ? 'Otvoriť celý report →' : 'Otvoriť v TrustStep →',
+      ctaLabel: data.id ? 'Otvoriť celý report →' : 'Otvoriť v FeelsOdd →',
     })
   } catch (err) {
-    console.error('[TrustStep page-check]', err)
+    console.error('[FeelsOdd page-check]', err)
     showError({})
   }
 }
@@ -231,11 +231,11 @@ function handleRuntimeMessage(message, sendResponse) {
     showResult({
       riskLevel: result.riskLevel,
       reasons: result.reasons ?? [],
-      recommendation: result.recommendation ?? 'Skontrolujte výsledok v TrustStepe.',
+      recommendation: result.recommendation ?? 'Skontrolujte výsledok v FeelsOdd.',
       targetLabel: payload.targetLabel,
       targetValue: payload.targetValue,
       ctaHref: payload.ctaHref || `${APP_URL}/submit`,
-      ctaLabel: payload.ctaLabel || 'Otvoriť v TrustStep →',
+      ctaLabel: payload.ctaLabel || 'Otvoriť v FeelsOdd →',
     })
     sendResponse({ handled: true })
     return true
@@ -244,7 +244,7 @@ function handleRuntimeMessage(message, sendResponse) {
   if (message.type === 'truststep:show-analysis-error') {
     const payload = message.payload || {}
     showError({
-      message: escHtml(payload.message || 'Nepodarilo sa spojiť s TrustStep API.'),
+      message: escHtml(payload.message || 'Nepodarilo sa spojiť s FeelsOdd API.'),
       targetLabel: payload.targetLabel,
       fallbackUrl: payload.fallbackUrl || '',
       retryAction: false,
@@ -263,7 +263,7 @@ function createTriggerButton() {
 
   const btn = document.createElement('button')
   btn.id        = 'ts-trigger-btn'
-  btn.title     = 'TrustStep — skontrolovať stránku'
+  btn.title     = 'FeelsOdd — skontrolovať stránku'
   btn.innerHTML = `
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
       <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" fill="#3B82F6"/>

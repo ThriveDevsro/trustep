@@ -6,21 +6,21 @@ export default function TermsPage() {
   return (
     <LegalPage
       title="Podmienky používania"
-      intro="Tieto podmienky upravujú používanie webu, používateľského účtu a bezpečnostných analytických funkcií TrustStep"
+      intro="Tieto podmienky upravujú používanie webu, používateľského účtu a bezpečnostných analytických funkcií FeelsOdd"
       sections={[
         {
           title: 'Poskytovateľ služby',
           content: (
             <>
-              <p>Službu poskytuje TrustStep. Úplné obchodné meno, sídlo, IČO, zápis v registri a kontaktné údaje budú doplnené pred verejným komerčným spustením.</p>
+              <p>Službu poskytuje FeelsOdd. Úplné obchodné meno, sídlo, IČO, zápis v registri a kontaktné údaje budú doplnené pred verejným komerčným spustením.</p>
               <p>Kontakt pre otázky k službe: <a href="mailto:hello@truststep.sk" className="font-bold text-[#111827] underline">hello@truststep.sk</a>.</p>
             </>
           ),
         },
         {
-          title: 'Čo TrustStep poskytuje',
+          title: 'Čo FeelsOdd poskytuje',
           content: (
-            <p>TrustStep analyzuje používateľom zadané správy, odkazy, súbory a ďalší obsah s cieľom upozorniť na možné známky phishingu, podvodu alebo manipulatívnej komunikácie. Dostupné funkcie sa môžu líšiť podľa zvoleného plánu.</p>
+            <p>FeelsOdd overuje používateľom zadanú digitálnu komunikáciu s cieľom posúdiť tvrdenú identitu odosielateľa, požadovanú akciu, zhodu identity a možné známky sociálneho inžinierstva alebo podvodu. Správa, odkaz či súbor sú vstupmi do rovnakého overovacieho procesu. Dostupné funkcie sa môžu líšiť podľa zvoleného plánu.</p>
           ),
         },
         {

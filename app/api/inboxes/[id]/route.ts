@@ -13,6 +13,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (!id) {
       return NextResponse.json({ error: 'Chýba inbox id.' }, { status: 400 })
     }
+    const user = await getRequestAppUser(req)
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const body = await req.json()
     const updates: Record<string, unknown> = {
@@ -45,11 +47,6 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
     const supabase = createServiceClient()
     if (!supabase) {
-      const user = await getRequestAppUser(req)
-      if (!user) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-      }
-
       const existingInbox = await getDemoInboxById(id)
       if (!existingInbox || existingInbox.company_id !== user.id) {
         return NextResponse.json({ error: 'Inbox sa nenašiel.' }, { status: 404 })
@@ -75,6 +72,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
         .from('connected_inboxes')
         .select('provider, status, imap_host, imap_port, imap_secure, imap_username, imap_password')
         .eq('id', id)
+        .eq('company_id', user.id)
         .single()
 
       if (existingInboxError || !existingInbox) {
@@ -121,6 +119,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       .from('connected_inboxes')
       .update(updates)
       .eq('id', id)
+      .eq('company_id', user.id)
       .select(SAFE_INBOX_COLUMNS)
       .single()
 
@@ -139,14 +138,11 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     if (!id) {
       return NextResponse.json({ error: 'Chýba inbox id.' }, { status: 400 })
     }
+    const user = await getRequestAppUser(req)
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const supabase = createServiceClient()
     if (!supabase) {
-      const user = await getRequestAppUser(req)
-      if (!user) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-      }
-
       const existingInbox = await getDemoInboxById(id)
       if (!existingInbox || existingInbox.company_id !== user.id) {
         return NextResponse.json({ error: 'Inbox sa nenašiel.' }, { status: 404 })
@@ -160,6 +156,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
       .from('connected_inboxes')
       .delete()
       .eq('id', id)
+      .eq('company_id', user.id)
 
     if (error) throw error
 

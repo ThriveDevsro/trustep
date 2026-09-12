@@ -4,13 +4,13 @@ import { createServiceClient } from '@/lib/supabase'
 function deriveAccountName(email: string): string {
   const domain = email.split('@')[1]?.toLowerCase() || ''
 
-  if (!domain) return 'TrustStep účet'
+  if (!domain) return 'FeelsOdd účet'
 
   const personalDomains = new Set(['gmail.com', 'icloud.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'zoznam.sk', 'centrum.sk'])
-  if (personalDomains.has(domain)) return 'Osobný účet'
+  if (personalDomains.has(domain)) return 'Firemný účet'
 
   const base = domain.split('.')[0]
-  if (!base) return 'TrustStep účet'
+  if (!base) return 'FeelsOdd účet'
 
   return base
     .split(/[-_]/g)
@@ -54,6 +54,7 @@ export async function POST(req: NextRequest) {
         id: data.user.id,
         name: String(fullName || '').trim() || deriveAccountName(email),
         approver_email: email,
+        account_type: 'business',
       },
       { onConflict: 'id' }
     )

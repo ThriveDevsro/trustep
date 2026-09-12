@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { analyzeForFraud } from '@/lib/ai'
+import { analyzeForFraudResilient } from '@/lib/ai'
 import { createDevRequest } from '@/lib/dev-requests-store'
 import { createServiceClient } from '@/lib/supabase'
 import { buildEmailAnalysisText } from '@/lib/inbound-email'
@@ -8,17 +8,23 @@ import { DEMO_COMPANY_ID, hasUsedGuestAnalysis, isGuestAnalysis, markGuestAnalys
 import { maybeSendIncidentAlert } from '@/lib/incident-alerts'
 import { generateToken } from '@/lib/utils'
 import { sendApprovalEmail } from '@/lib/resend'
+import { resolveAnalysisAccess } from '@/lib/analysis-access'
+import { enforceAnalysisRateLimit } from '@/lib/rate-limit'
 
 const MAX_EMAIL_FILE_BYTES = 2 * 1024 * 1024
 
 export async function POST(req: NextRequest) {
   try {
+    const rateLimited = enforceAnalysisRateLimit(req, 'analyze-email-file')
+    if (rateLimited) return rateLimited
     const formData = (await req.formData()) as unknown as {
       get(name: string): FormDataEntryValue | null
     }
     const emailFile = formData.get('email')
-    const submittedBy = String(formData.get('submittedBy') || '').trim()
-    const companyId = String(formData.get('companyId') || DEMO_COMPANY_ID).trim()
+    const claimedCompanyId = String(formData.get('companyId') || DEMO_COMPANY_ID).trim()
+    const accessResult = await resolveAnalysisAccess(req, claimedCompanyId)
+    if (accessResult.response) return accessResult.response
+    const { companyId, submittedBy } = accessResult.access!
 
     if (!(emailFile instanceof File) || emailFile.size === 0) {
       return NextResponse.json({ error: 'Chýba .eml súbor.' }, { status: 400 })
@@ -27,10 +33,6 @@ export async function POST(req: NextRequest) {
     const fileName = emailFile.name.toLowerCase()
     if (!fileName.endsWith('.eml')) {
       return NextResponse.json({ error: 'Momentálne je podporovaný iba formát .eml.' }, { status: 400 })
-    }
-
-    if (!submittedBy) {
-      return NextResponse.json({ error: 'Chýba e-mail používateľa.' }, { status: 400 })
     }
 
     if (isGuestAnalysis(companyId) && hasUsedGuestAnalysis(req)) {
@@ -47,7 +49,18 @@ export async function POST(req: NextRequest) {
     const rawEmail = Buffer.from(await emailFile.arrayBuffer()).toString('utf8')
     const parsedEmail = parseEml(rawEmail)
     const analysisText = buildEmailAnalysisText(parsedEmail)
-    const analysis = await analyzeForFraud(analysisText)
+    const analysis = await analyzeForFraudResilient(analysisText)
+
+    if (isGuestAnalysis(companyId)) {
+      return markGuestAnalysisUsed(NextResponse.json({
+        id: null,
+        riskLevel: analysis.riskLevel,
+        reasons: analysis.reasons,
+        recommendation: analysis.recommendation,
+        subject: parsedEmail.subject,
+        from: parsedEmail.from,
+      }))
+    }
 
     const supabase = createServiceClient()
 

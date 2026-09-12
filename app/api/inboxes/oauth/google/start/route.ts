@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
+import { getRequestAppUser } from '@/lib/server-auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,31 +25,35 @@ function getGoogleOauthConfig() {
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const inboxId = req.nextUrl.searchParams.get('inboxId')?.trim()
+    const user = await getRequestAppUser(req)
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const { inboxId: rawInboxId } = await req.json()
+    const inboxId = String(rawInboxId || '').trim()
     if (!inboxId) {
-      return NextResponse.redirect(new URL('/inboxes?oauth_error=missing_inbox', req.url))
+      return NextResponse.json({ error: 'Chýba inbox.' }, { status: 400 })
     }
 
     const oauthConfig = getGoogleOauthConfig()
     if (!oauthConfig) {
-      return NextResponse.redirect(new URL('/inboxes?oauth_error=missing_google_config', req.url))
+      return NextResponse.json({ error: 'Google pripojenie nie je nakonfigurované.' }, { status: 503 })
     }
 
     const supabase = createServiceClient()
     if (!supabase) {
-      return NextResponse.redirect(new URL('/inboxes?oauth_error=missing_supabase', req.url))
+      return NextResponse.json({ error: 'Databáza nie je nakonfigurovaná.' }, { status: 503 })
     }
 
     const { data: inbox, error } = await supabase
       .from('connected_inboxes')
-      .select('id, provider, status')
+      .select('id, provider, status, company_id')
       .eq('id', inboxId)
+      .eq('company_id', user.id)
       .single()
 
     if (error || !inbox || inbox.provider !== 'gmail') {
-      return NextResponse.redirect(new URL('/inboxes?oauth_error=inbox_not_found', req.url))
+      return NextResponse.json({ error: 'Schránka sa nenašla.' }, { status: 404 })
     }
 
     const state = crypto.randomUUID()
@@ -62,7 +67,7 @@ export async function GET(req: NextRequest) {
     callbackTarget.searchParams.set('include_granted_scopes', 'true')
     callbackTarget.searchParams.set('state', state)
 
-    const response = NextResponse.redirect(callbackTarget)
+    const response = NextResponse.json({ authorizeUrl: callbackTarget.toString() })
     response.cookies.set(OAUTH_STATE_COOKIE, JSON.stringify({
       state,
       inboxId,
@@ -78,6 +83,6 @@ export async function GET(req: NextRequest) {
     return response
   } catch (error) {
     console.error('[google-oauth-start]', error)
-    return NextResponse.redirect(new URL('/inboxes?oauth_error=start_failed', req.url))
+    return NextResponse.json({ error: 'Google pripojenie sa nepodarilo spustiť.' }, { status: 500 })
   }
 }

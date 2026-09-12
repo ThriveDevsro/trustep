@@ -10,11 +10,16 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   const isAuthPage =
     pathname === '/login' ||
     pathname === '/register' ||
+    pathname === '/reset-hesla' ||
+    pathname === '/nove-heslo' ||
     pathname.startsWith('/login/') ||
     pathname.startsWith('/register/') ||
-    pathname.startsWith('/auth/')
+    pathname.startsWith('/auth/') ||
+    pathname.startsWith('/prijmout-pozvanku/')
   const isWorkspacePage =
     pathname === '/dashboard' ||
+    pathname === '/ucet' ||
+    pathname.startsWith('/ucet/') ||
     pathname === '/inboxes' ||
     pathname.startsWith('/inboxes/') ||
     pathname === '/submit' ||
@@ -22,10 +27,21 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
     pathname === '/link-check' ||
     pathname.startsWith('/link-check/') ||
     pathname === '/sms' ||
+    pathname === '/historia' ||
+    pathname.startsWith('/historia/') ||
+    pathname === '/o-mne' ||
+    pathname === '/doveryhodne-kontakty' ||
+    pathname === '/predplatne' ||
+    pathname.startsWith('/predplatne/') ||
+    pathname === '/tim' ||
+    pathname.startsWith('/tim/') ||
+    pathname === '/test-odolnosti' ||
     pathname === '/submit-call' ||
     pathname.startsWith('/report/')
 
-  if (isAuthPage) {
+  const isImmersivePage = pathname === '/vyskusat'
+
+  if (isAuthPage || isImmersivePage) {
     return <main className="relative isolate min-h-screen">{children}</main>
   }
 

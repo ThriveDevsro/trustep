@@ -13,7 +13,7 @@ export function isSupabaseAuthAvailable() {
 export function deriveAccountNameFromEmail(email: string): string {
   const domain = email.trim().toLowerCase().split('@')[1] || ''
 
-  if (!domain) return 'TrustStep účet'
+  if (!domain) return 'FeelsOdd účet'
 
   const personalDomains = new Set([
     'gmail.com',
@@ -25,10 +25,10 @@ export function deriveAccountNameFromEmail(email: string): string {
     'centrum.sk',
   ])
 
-  if (personalDomains.has(domain)) return 'Osobný účet'
+  if (personalDomains.has(domain)) return 'Firemný účet'
 
   const base = domain.split('.')[0]
-  if (!base) return 'TrustStep účet'
+  if (!base) return 'FeelsOdd účet'
 
   return base
     .split(/[-_]/g)
@@ -93,4 +93,13 @@ export async function signOutAppUser(): Promise<void> {
   await fetchJson<{ success: true }>('/api/auth/logout', {
     method: 'POST',
   })
+}
+
+export async function getAppAuthHeaders(): Promise<Record<string, string>> {
+  const supabase = getSupabase()
+  if (!supabase) return {}
+
+  const { data } = await supabase.auth.getSession()
+  const accessToken = data.session?.access_token
+  return accessToken ? { Authorization: `Bearer ${accessToken}` } : {}
 }

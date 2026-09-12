@@ -15,14 +15,13 @@ export async function POST(req: NextRequest) {
     if (!companyId) {
       return NextResponse.json({ error: 'Chýba companyId.' }, { status: 400 })
     }
+    const user = await getRequestAppUser(req)
+    if (!user || user.id !== companyId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
     const supabase = createServiceClient()
     if (!supabase) {
-      const user = await getRequestAppUser(req)
-      if (!user || user.id !== companyId) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-      }
-
       const summary = await syncDemoInboxes({ companyId, inboxId })
       return NextResponse.json({ summary, warning: 'Beží demo inbox sync bez Supabase.' })
     }

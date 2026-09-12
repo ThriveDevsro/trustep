@@ -57,7 +57,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
               aria-selected={language === item.value}
             >
               <span>{item.label}</span>
-              {language === item.value && <Check className="h-4 w-4 text-[#ff4f00]" />}
+              {language === item.value && <Check className="h-4 w-4 text-[#2563EB]" />}
             </button>
           ))}
         </div>

@@ -64,7 +64,7 @@ export function getInboxNextStep(inbox: ConnectedInbox): string {
   }
 
   if (inbox.status === 'paused') {
-    return 'Skenovanie je pozastavené. Po obnovení bude TrustStep pokračovať bez straty histórie.'
+    return 'Skenovanie je pozastavené. Po obnovení bude FeelsOdd pokračovať bez straty histórie.'
   }
 
   if (inbox.status === 'error') {

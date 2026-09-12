@@ -1,17 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
-import { analyzeForFraud, transcribeAudio } from '@/lib/ai'
+import { analyzeForFraudResilient, transcribeAudio } from '@/lib/ai'
 import { createDevRequest } from '@/lib/dev-requests-store'
 import { DEMO_COMPANY_ID, hasUsedGuestAnalysis, isGuestAnalysis, markGuestAnalysisUsed } from '@/lib/guest-analysis'
 import { maybeSendIncidentAlert } from '@/lib/incident-alerts'
 import { sendApprovalEmail } from '@/lib/resend'
 import { generateToken } from '@/lib/utils'
+import { resolveAnalysisAccess } from '@/lib/analysis-access'
+import twilio from 'twilio'
+import { enforceAnalysisRateLimit } from '@/lib/rate-limit'
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 }
+const MAX_AUDIO_BYTES = 15 * 1024 * 1024
+const SUPPORTED_AUDIO_TYPES = new Set([
+  'audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/x-wav', 'audio/mp4', 'audio/m4a', 'audio/webm', 'audio/ogg',
+])
 
 export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: CORS_HEADERS })
@@ -21,6 +28,13 @@ export async function OPTIONS() {
 //   1. Twilio recording webhook — form-encoded, contains RecordingUrl
 //   2. Manual upload from /submit-call — multipart form with audio file
 export async function POST(req: NextRequest) {
+  if (process.env.CALL_ANALYSIS_ENABLED !== 'true') {
+    return NextResponse.json(
+      { error: 'Analýza nahrávok hovorov zatiaľ nie je dostupná.' },
+      { status: 503, headers: CORS_HEADERS },
+    )
+  }
+
   const contentType = req.headers.get('content-type') ?? ''
 
   try {
@@ -43,6 +57,15 @@ async function handleTwilioWebhook(req: NextRequest) {
   const rawBody   = await req.text()
   const params    = new URLSearchParams(rawBody)
 
+  const twilioToken = process.env.TWILIO_AUTH_TOKEN?.trim()
+  const signature = req.headers.get('x-twilio-signature')
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '')
+  const webhookUrl = appUrl ? `${appUrl}/api/analyze-call` : req.url
+  const paramsObject = Object.fromEntries(params.entries())
+  if (!twilioToken || !signature || !twilio.validateRequest(twilioToken, signature, webhookUrl, paramsObject)) {
+    return NextResponse.json({ error: 'Invalid Twilio signature' }, { status: 403 })
+  }
+
   const recordingUrl = params.get('RecordingUrl')
   const from         = params.get('From') ?? 'unknown'
   const duration     = params.get('RecordingDuration') ?? '0'
@@ -51,6 +74,16 @@ async function handleTwilioWebhook(req: NextRequest) {
     return new NextResponse('<?xml version="1.0"?><Response></Response>', {
       headers: { 'Content-Type': 'text/xml' },
     })
+  }
+
+  let recordingHost = ''
+  try {
+    recordingHost = new URL(recordingUrl).hostname.toLowerCase()
+  } catch {
+    return NextResponse.json({ error: 'Invalid recording URL' }, { status: 400 })
+  }
+  if (recordingHost !== 'api.twilio.com' && !recordingHost.endsWith('.twilio.com')) {
+    return NextResponse.json({ error: 'Unexpected recording host' }, { status: 400 })
   }
 
   // Download the recording (Twilio serves mp3 when you append .mp3)
@@ -65,6 +98,9 @@ async function handleTwilioWebhook(req: NextRequest) {
   })
 
   if (!audioRes.ok) throw new Error(`Failed to fetch recording: ${audioRes.status}`)
+  if (Number(audioRes.headers.get('content-length') || 0) > MAX_AUDIO_BYTES) {
+    throw new Error('Recording is too large')
+  }
 
   const audioBuffer   = Buffer.from(await audioRes.arrayBuffer())
   const transcription = await transcribeAudio(audioBuffer, 'call.mp3')
@@ -84,15 +120,23 @@ async function handleTwilioWebhook(req: NextRequest) {
 // ─── Manual audio upload ─────────────────────────────────────────────────────
 
 async function handleManualUpload(req: NextRequest) {
+  const rateLimited = enforceAnalysisRateLimit(req, 'analyze-call')
+  if (rateLimited) return rateLimited
   const formData    = (await req.formData()) as unknown as {
     get(name: string): FormDataEntryValue | null
   }
   const audioFile   = formData.get('audio') as File | null
-  const submittedBy = (formData.get('submittedBy') as string) || 'unknown'
-  const companyId   = (formData.get('companyId') as string) || DEMO_COMPANY_ID
+  const claimedCompanyId = (formData.get('companyId') as string) || DEMO_COMPANY_ID
+  const accessResult = await resolveAnalysisAccess(req, claimedCompanyId)
+  if (accessResult.response) return accessResult.response
+  const { companyId, submittedBy } = accessResult.access!
 
   if (!audioFile) {
     return NextResponse.json({ error: 'No audio file provided' }, { status: 400, headers: CORS_HEADERS })
+  }
+
+  if (!SUPPORTED_AUDIO_TYPES.has(audioFile.type) || audioFile.size === 0 || audioFile.size > MAX_AUDIO_BYTES) {
+    return NextResponse.json({ error: 'Unsupported or oversized audio file' }, { status: 400, headers: CORS_HEADERS })
   }
 
   if (isGuestAnalysis(companyId) && hasUsedGuestAnalysis(req)) {
@@ -130,7 +174,17 @@ async function saveAndNotify({
   source: 'sms' | 'call'
   companyId?: string
 }) {
-  const analysis      = await analyzeForFraud(text)
+  const analysis      = await analyzeForFraudResilient(text)
+
+  if (isGuestAnalysis(companyId)) {
+    return {
+      id: null,
+      riskLevel: analysis.riskLevel,
+      reasons: analysis.reasons,
+      recommendation: analysis.recommendation,
+    }
+  }
+
   const approverToken = generateToken()
   const supabase      = createServiceClient()
 

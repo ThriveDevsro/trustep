@@ -1,25 +1,39 @@
-import clsx from 'clsx'
+import Image from "next/image";
+import clsx from "clsx";
 
 interface BrandLogoProps {
-  theme?: 'light' | 'dark'
-  size?: 'sm' | 'md' | 'lg'
-  className?: string
+  theme?: "light" | "dark";
+  size?: "sm" | "md" | "lg";
+  className?: string;
 }
 
-export function BrandLogo({ theme = 'dark', size = 'md', className }: BrandLogoProps) {
+export function BrandLogo({
+  theme = "dark",
+  size = "md",
+  className,
+}: BrandLogoProps) {
   return (
     <span
       className={clsx(
-        'inline-flex items-baseline font-extrabold leading-none tracking-tight',
-        theme === 'light' ? 'text-white' : 'text-slate-950',
-        size === 'sm' && 'text-base',
-        size === 'md' && 'text-xl',
-        size === 'lg' && 'text-2xl',
+        "inline-flex items-center leading-none",
         className,
       )}
-      aria-label="TrustStep"
+      aria-label="FeelsOdd"
     >
-      Trust<span className="text-[#FF4F00]">Step</span>
+      <Image
+        src="/logo.png"
+        alt="FeelsOdd"
+        width={2172}
+        height={724}
+        priority
+        className={clsx(
+          "h-auto w-auto object-contain",
+          size === "sm" && "max-h-6 max-w-[7.25rem]",
+          size === "md" && "max-h-8 max-w-[9.75rem]",
+          size === "lg" && "max-h-11 max-w-[13.25rem]",
+          theme === "light" && "brightness-0 invert",
+        )}
+      />
     </span>
-  )
+  );
 }

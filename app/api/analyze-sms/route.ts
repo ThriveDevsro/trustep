@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { validateRequest } from 'twilio'
 import { createServiceClient } from '@/lib/supabase'
-import { analyzeForFraud } from '@/lib/ai'
+import { analyzeForFraudResilient } from '@/lib/ai'
 import { maybeSendIncidentAlert } from '@/lib/incident-alerts'
 import { sendApprovalEmail } from '@/lib/resend'
 import { generateToken } from '@/lib/utils'
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     }
 
     const text = `SMS od: ${from}\nObsah: ${body}`
-    const analysis      = await analyzeForFraud(text)
+    const analysis      = await analyzeForFraudResilient(text)
     const approverToken = generateToken()
     const supabase      = createServiceClient()
     let requestId: string | null = null
@@ -95,15 +95,15 @@ export async function POST(req: NextRequest) {
     // Reply to sender with a TwiML SMS acknowledging receipt
     const riskLabel = { low: 'nízke', medium: 'stredné', high: 'VYSOKÉ' }[analysis.riskLevel]
     const reply = analysis.riskLevel === 'low'
-      ? `TrustStep: Táto správa vyzerá bezpečne (riziko: ${riskLabel}).`
+      ? `FeelsOdd: Táto správa vyzerá bezpečne (riziko: ${riskLabel}).`
       : requestId
-        ? `TrustStep: Detegované ${riskLabel} riziko. Schvaľovateľ bol informovaný. Detail: ${process.env.NEXT_PUBLIC_APP_URL}/report/${requestId}`
-        : `TrustStep: Detegované ${riskLabel} riziko. Správu odporúčame ďalej neotvárať a overiť mimo pôvodného kanála.`
+        ? `FeelsOdd: Detegované ${riskLabel} riziko. Schvaľovateľ bol informovaný. Detail: ${process.env.NEXT_PUBLIC_APP_URL}/report/${requestId}`
+        : `FeelsOdd: Detegované ${riskLabel} riziko. Správu odporúčame ďalej neotvárať a overiť mimo pôvodného kanála.`
 
     return twimlResponse(reply)
   } catch (err) {
     console.error('[analyze-sms]', err)
-    return twimlResponse('TrustStep: Interná chyba analýzy.')
+    return twimlResponse('FeelsOdd: Interná chyba analýzy.')
   }
 }
 

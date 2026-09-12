@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
-import { analyzeForFraud } from '@/lib/ai'
+import { analyzeForFraudResilient } from '@/lib/ai'
 import { createDevRequest } from '@/lib/dev-requests-store'
 import { hasUsedGuestAnalysis, isGuestAnalysis, markGuestAnalysisUsed } from '@/lib/guest-analysis'
 import { maybeSendIncidentAlert } from '@/lib/incident-alerts'
 import { sendApprovalEmail } from '@/lib/resend'
 import type { RequestSource } from '@/lib/types'
 import { generateToken } from '@/lib/utils'
+import { resolveAnalysisAccess } from '@/lib/analysis-access'
+import { enforceAnalysisRateLimit } from '@/lib/rate-limit'
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -20,12 +22,17 @@ export async function OPTIONS() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { text, submittedBy, companyId, source } = await req.json()
+    const rateLimited = enforceAnalysisRateLimit(req, 'analyze')
+    if (rateLimited) return rateLimited
+    const { text, companyId: claimedCompanyId, source } = await req.json()
+    const accessResult = await resolveAnalysisAccess(req, claimedCompanyId)
+    if (accessResult.response) return accessResult.response
+    const { companyId, submittedBy } = accessResult.access!
     const requestSource: RequestSource = ['email', 'sms', 'web', 'call', 'image'].includes(source)
       ? source
       : 'web'
 
-    if (!text || !submittedBy || !companyId) {
+    if (!text) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400, headers: CORS_HEADERS })
     }
 
@@ -36,8 +43,22 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Run AI analysis — works even without Supabase
-    const analysis = await analyzeForFraud(text)
+    // The content classifier returns a verdict only from explicit, explainable
+    // combinations of signals. A pasted e-mail or a bare link is not escalated
+    // simply because sender headers are unavailable.
+    const analysis = await analyzeForFraudResilient(text)
+
+    if (isGuestAnalysis(companyId)) {
+      return markGuestAnalysisUsed(NextResponse.json(
+        {
+          id: null,
+          riskLevel: analysis.riskLevel,
+          reasons: analysis.reasons,
+          recommendation: analysis.recommendation,
+        },
+        { headers: CORS_HEADERS }
+      ))
+    }
 
     const supabase = createServiceClient()
 

@@ -1,6 +1,6 @@
-# TrustStep
+# FeelsOdd
 
-**TrustStep** is a B2B SaaS security tool that protects companies from AI-powered fraud, phishing, and fake payment instructions. Employees can paste suspicious content, forward suspicious emails, and let TrustStep analyze the risk before anyone makes a costly mistake.
+**FeelsOdd** is a B2B SaaS security tool that protects companies from AI-powered fraud, phishing, and fake payment instructions. Employees can paste suspicious content, forward suspicious emails, and let FeelsOdd analyze the risk before anyone makes a costly mistake.
 
 ---
 
@@ -14,8 +14,6 @@
 - Manual and scheduled inbox sync for connected Gmail, Outlook, and IMAP mailboxes
 - Optional Slack / Teams incident alerting for medium/high findings
 - Screenshot upload with OCR + fraud analysis
-- Mobile/PWA share target for shared text, links, screenshots, and audio files
-- Native Expo mobile app scaffold sharing the same account, incident history, and demo inboxes
 - WebExtensions-first browser capture for selected text, links, web pages, and Gmail
 - Full audit trail with timestamps, risk scores, and approver decisions
 - Clean dashboard to monitor all requests
@@ -98,7 +96,23 @@ If you already created `connected_inboxes` before IMAP credentials were added, a
 3. Add this redirect URI in Google Cloud:
    - `http://localhost:3000/api/inboxes/oauth/google/callback`
    - or your production equivalent based on `NEXT_PUBLIC_APP_URL`
-4. TrustStep requests `gmail.readonly` plus basic identity scopes to resolve the mailbox address
+4. FeelsOdd requests `gmail.readonly` plus basic identity scopes to resolve the mailbox address
+
+### 8.1 Set up Google and Microsoft login
+
+Social login is handled by Supabase Auth. The Gmail/Outlook inbox variables below are unrelated to account login.
+
+1. Put a real Supabase project URL, anon key, and service-role key in `.env.local` (see `.env.example`).
+2. In Supabase Auth URL Configuration, set the Site URL and allow these redirect URLs:
+   - `http://localhost:3000/auth/callback`
+   - `https://your-domain.com/auth/callback`
+3. Create a Google OAuth web client. In Google Cloud, use this authorized redirect URI:
+   - `https://your-project-ref.supabase.co/auth/v1/callback`
+4. Enable Google in Supabase Auth Providers and paste the Google client ID and secret there.
+5. Create a Microsoft Entra app. Use the same Supabase callback URI:
+   - `https://your-project-ref.supabase.co/auth/v1/callback`
+6. Enable Azure in Supabase Auth Providers and paste the Microsoft client ID, secret, and tenant URL there. Use the `common` tenant for personal and work Microsoft accounts.
+7. Restart the Next.js server after changing `.env.local`.
 
 ### 8.5 Set up Microsoft Graph OAuth for Outlook inboxes
 
@@ -110,7 +124,7 @@ If you already created `connected_inboxes` before IMAP credentials were added, a
 3. Add this redirect URI:
    - `http://localhost:3000/api/inboxes/oauth/outlook/callback`
    - or your production equivalent based on `NEXT_PUBLIC_APP_URL`
-4. TrustStep requests `Mail.Read`, `User.Read`, `offline_access`, and basic identity scopes
+4. FeelsOdd requests `Mail.Read`, `User.Read`, `offline_access`, and basic identity scopes
 
 ### 8.6 Set up IMAP inboxes
 
@@ -121,7 +135,7 @@ If you already created `connected_inboxes` before IMAP credentials were added, a
    - TLS/SSL preference
    - IMAP username
    - IMAP password or app password
-3. TrustStep stores these credentials server-side only and never returns them to the browser API response
+3. FeelsOdd stores these credentials server-side only and never returns them to the browser API response
 4. For production, replace plain database storage with encrypted secrets or a dedicated vault
 
 ### 9. Run the development server
@@ -152,7 +166,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 2. Optionally set `INCIDENT_ALERT_MIN_RISK` to:
    - `medium` (default)
    - `high`
-3. TrustStep posts external alerts whenever a new incident at or above the configured risk is created
+3. FeelsOdd posts external alerts whenever a new incident at or above the configured risk is created
 4. The helper auto-detects Microsoft Teams style webhooks by URL and falls back to Slack-style payloads otherwise
 5. In `/inboxes`, use `Poslať test alert` to verify the webhook without waiting for a real incident
 
@@ -160,7 +174,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 1. Ensure `RESEND_API_KEY` and the company `approver_email` are configured
 2. In `/inboxes`, use `Poslať denný digest`
-3. TrustStep sends a 24-hour summary with:
+3. FeelsOdd sends a 24-hour summary with:
    - total medium/high incidents
    - source breakdown
    - latest priorities
@@ -176,7 +190,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 3. Send either:
    - `Authorization: Bearer <DIGEST_CRON_SECRET>`
    - or `x-digest-secret: <DIGEST_CRON_SECRET>`
-4. TrustStep will send the daily digest to every company `approver_email`
+4. FeelsOdd will send the daily digest to every company `approver_email`
 
 ### 10. Load the browser extension
 
@@ -190,26 +204,6 @@ The extension can then:
 - analyze the current page or a clicked link
 - analyze the opened Gmail or Outlook Web email without copy-paste
 
-### 11. Run the native mobile app
-
-The repository also contains `mobile-app/`, an Expo client that talks to the same backend.
-
-```bash
-cd mobile-app
-npm install
-EXPO_PUBLIC_API_BASE_URL=http://192.168.1.228:3000 npm run start
-```
-
-What the native app already supports:
-- email/password auth against `/api/auth/*`
-- shared incident history via `/api/dev-requests`
-- text analysis, URL analysis, and screenshot analysis
-- demo inbox creation and sync without Supabase
-
-If your phone cannot reach `localhost`, use your laptop Wi-Fi IP instead and update the backend URL in the app's `Účet` tab.
-
----
-
 ## Environment Variables
 
 | Variable | Description |
@@ -221,7 +215,7 @@ If your phone cannot reach `localhost`, use your laptop Wi-Fi IP instead and upd
 | `OPENAI_API_KEY` | OpenAI API key used for screenshot OCR / vision extraction |
 | `RESEND_API_KEY` | Resend API key for transactional email |
 | `RESEND_WEBHOOK_SECRET` | Resend webhook signing secret for inbound email verification |
-| `NEXT_PUBLIC_INBOUND_EMAIL_DOMAIN` | Public inbound receiving domain used for forward-to-TrustStep addresses |
+| `NEXT_PUBLIC_INBOUND_EMAIL_DOMAIN` | Public inbound receiving domain used for forward-to-FeelsOdd addresses |
 | `NEXT_PUBLIC_APP_URL` | Base URL of the app (e.g. `http://localhost:3000`) |
 | `GOOGLE_MAIL_CLIENT_ID` | Google OAuth client id for Gmail inbox connect |
 | `GOOGLE_MAIL_CLIENT_SECRET` | Google OAuth client secret for Gmail inbox connect |
@@ -269,10 +263,6 @@ truststep/
 │   ├── Navbar.tsx
 │   ├── RiskBadge.tsx
 │   └── StatusBadge.tsx
-├── mobile-app/
-│   ├── App.tsx                  # Expo native client
-│   ├── src/api.ts               # Mobile API client
-│   └── src/types.ts             # Shared mobile types
 ├── lib/
 │   ├── types.ts
 │   ├── supabase.ts
@@ -303,4 +293,4 @@ _[Add screenshot here]_
 
 ---
 
-© 2026 TrustStep
+© 2026 FeelsOdd

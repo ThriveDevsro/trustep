@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { createDevRequest, listDevRequestsByCompany } from '@/lib/dev-requests-store'
-import { analyzeForFraud } from '@/lib/ai'
+import { analyzeForFraudResilient } from '@/lib/ai'
 import type { ConnectedInbox, InboxConnectionMethod, InboxProvider, InboxStatus } from '@/lib/types'
 
 const DEV_INBOXES_FILE = join(process.cwd(), '.truststep', 'dev-inboxes.json')
@@ -211,7 +211,7 @@ export async function syncDemoInboxes(options: { companyId: string; inboxId?: st
     summary.fetched += 1
 
     const text = buildDemoEmailText(inbox, nextSeed)
-    const analysis = await analyzeForFraud(text)
+    const analysis = await analyzeForFraudResilient(text)
     await createDevRequest({
       companyId: inbox.company_id,
       submittedBy: inbox.email_address,

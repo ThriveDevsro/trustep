@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "TrustStep — ochrana pred podvodmi",
+  "name": "FeelsOdd — ochrana pred podvodmi",
   "version": "1.2.0",
   "description": "Kontroluje Gmail a Outlook e-maily, označený text, linky a webstránky priamo v prehliadači.",
   "permissions": ["activeTab", "contextMenus", "scripting", "storage", "tabs"],
@@ -50,6 +50,6 @@
     "128": "icons/icon128.png"
   },
   "action": {
-    "default_title": "TrustStep"
+    "default_title": "FeelsOdd"
   }
 }

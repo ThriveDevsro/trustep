@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Loader2, Shield } from 'lucide-react'
 import { getSupabase } from '@/lib/supabase'
+import { getAppAuthHeaders } from '@/lib/app-auth'
 
 export default function AuthCallbackPage() {
   const router = useRouter()
@@ -22,7 +23,11 @@ export default function AuthCallbackPage() {
 
       try {
         const currentUrl = new URL(window.location.href)
-        const authError = currentUrl.searchParams.get('error_description') || currentUrl.searchParams.get('error')
+        const hashParams = new URLSearchParams(currentUrl.hash.replace(/^#/, ''))
+        const authError = currentUrl.searchParams.get('error_description')
+          || currentUrl.searchParams.get('error')
+          || hashParams.get('error_description')
+          || hashParams.get('error')
         const next = currentUrl.searchParams.get('next')
         const nextPath = next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard'
         if (authError) {
@@ -42,9 +47,8 @@ export default function AuthCallbackPage() {
 
         const response = await fetch('/api/register-company', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...(await getAppAuthHeaders()) },
           body: JSON.stringify({
-            userId: data.user.id,
             approverEmail: data.user.email,
           }),
         })

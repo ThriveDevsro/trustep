@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
         'Test webhook flow',
         'Overenie, že Slack alebo Teams integrácia prijíma incidenty',
       ],
-      snippet: 'Toto je testovací incident z TrustStepu. Nevyžaduje zásah a slúži len na overenie doručenia externých alertov.',
+      snippet: 'Toto je testovací incident z FeelsOdd. Nevyžaduje zásah a slúži len na overenie doručenia externých alertov.',
       status: 'pending',
       throwOnError: true,
     })

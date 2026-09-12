@@ -1,5 +1,82 @@
 import type { AnalysisResult, RiskLevel } from '@/lib/types'
 
+type ProtectedBrand = {
+  name: string
+  terms: string[]
+  officialDomains: string[]
+}
+
+export type BrandImpersonation = {
+  brand: string
+  registrableDomain: string
+}
+
+export type OfficialDomainCheck = {
+  brand: string
+  hostname: string
+  officialDomains: string[]
+  status: 'official' | 'mismatch'
+}
+
+// This is deliberately a small, explainable list. It is a context signal, not a
+// claim that a domain is malicious or that a brand owns every country TLD.
+const PROTECTED_BRANDS: ProtectedBrand[] = [
+  { name: 'EasyPark', terms: ['easypark'], officialDomains: ['easypark.com'] },
+  { name: 'Microsoft', terms: ['microsoft', 'office365', 'outlook'], officialDomains: ['microsoft.com', 'office.com', 'live.com', 'outlook.com'] },
+  { name: 'Google', terms: ['google', 'gmail'], officialDomains: ['google.com', 'gmail.com'] },
+  { name: 'Apple', terms: ['apple', 'icloud'], officialDomains: ['apple.com', 'icloud.com'] },
+  { name: 'Packeta', terms: ['packeta', 'zasilkovna'], officialDomains: ['packeta.com', 'zasilkovna.cz'] },
+  { name: 'DPD', terms: ['dpd'], officialDomains: ['dpd.com'] },
+  { name: 'Slovenská pošta', terms: ['slovenskaposta'], officialDomains: ['slovenskaposta.sk'] },
+  { name: 'Tatra banka', terms: ['tatrabanka'], officialDomains: ['tatrabanka.sk'] },
+  { name: 'VÚB banka', terms: ['vub'], officialDomains: ['vub.sk'] },
+  { name: 'Slovenská sporiteľňa', terms: ['slsp', 'slsp.sk'], officialDomains: ['slsp.sk'] },
+]
+
+function registrableDomain(hostname: string) {
+  const parts = hostname.toLowerCase().replace(/\.$/, '').split('.').filter(Boolean)
+  return parts.length >= 2 ? parts.slice(-2).join('.') : hostname.toLowerCase()
+}
+
+function isOfficialDomain(hostname: string, officialDomains: string[]) {
+  return officialDomains.some((domain) => hostname === domain || hostname.endsWith(`.${domain}`))
+}
+
+export function detectBrandImpersonation(hostname?: string): BrandImpersonation | null {
+  const normalized = hostname?.toLowerCase().replace(/^www\./, '').trim()
+  if (!normalized || isOfficialDomain(normalized, PROTECTED_BRANDS.flatMap((brand) => brand.officialDomains))) return null
+
+  const compactHostname = normalized.replace(/[^a-z0-9]/g, '')
+  const brand = PROTECTED_BRANDS.find(({ terms }) => terms.some((term) => compactHostname.includes(term.replace(/[^a-z0-9]/g, ''))))
+
+  return brand ? { brand: brand.name, registrableDomain: registrableDomain(normalized) } : null
+}
+
+/**
+ * Compares a brand claimed by the host, title or page text with a small,
+ * maintained list of official domains. A mismatch is a visible fact for the
+ * user; it is only escalated to risk together with a login/payment/data form.
+ */
+export function compareWithOfficialDomains(hostname: string, claimedContent = ''): OfficialDomainCheck[] {
+  const normalizedHost = hostname.toLowerCase().replace(/^www\./, '').trim()
+  const compactHost = normalizedHost.replace(/[^a-z0-9]/g, '')
+  const compactContent = claimedContent.toLowerCase().replace(/[^a-z0-9áäčďéíĺľňóôŕšťúýž]/g, '')
+
+  return PROTECTED_BRANDS.flatMap((brand) => {
+    const isClaimed = brand.terms.some((term) => {
+      const compactTerm = term.toLowerCase().replace(/[^a-z0-9]/g, '')
+      return compactHost.includes(compactTerm) || compactContent.includes(compactTerm)
+    })
+    if (!isClaimed) return []
+    return [{
+      brand: brand.name,
+      hostname: normalizedHost,
+      officialDomains: brand.officialDomains,
+      status: isOfficialDomain(normalizedHost, brand.officialDomains) ? 'official' as const : 'mismatch' as const,
+    }]
+  })
+}
+
 export interface ExtractedPageInfo {
   title: string
   hostname: string
@@ -25,9 +102,15 @@ export interface UrlHeuristics {
   hasFinanceLanguage: boolean
   hasPublicFigureLanguage: boolean
   hasLeadGenForm: boolean
+  hasPasswordField: boolean
+  hasCreditCard: boolean
+  hasLoginForm: boolean
   hasAggressiveTrackingPattern: boolean
   hasLocaleMismatch: boolean
   hasGenericHomepageTitle: boolean
+  impersonatedBrand?: string
+  officialDomainChecks: OfficialDomainCheck[]
+  hasBrandCredentialPath: boolean
   score: number
   reasons: string[]
 }
@@ -164,6 +247,12 @@ export function buildUrlHeuristics(originalUrl: string, finalUrl: string, pageIn
   const hasPublicFigureLanguage = /(politik|prezident|premi[eé]r|minister|poslanec|celebrity|verejn[aá] osobnos|zn[aá]ma osobnos|public figure|политик|президент|премьер|министр|селебрити|известн)/i.test(combinedText)
   const hasAggressiveTrackingPattern = hasTemplateTrackingPlaceholders && hasAdPlatformMarkers && opaqueTrackingParams >= 3
   const hasGenericHomepageTitle = /\bhomepage\b|^home\s*[-|]/i.test(pageInfo.title)
+  const officialDomainChecks = compareWithOfficialDomains(final.hostname, `${pageInfo.title}\n${pageInfo.text}`)
+  const brandImpersonation = detectBrandImpersonation(final.hostname)
+  const mismatchedBrand = officialDomainChecks.find((check) => check.status === 'mismatch')
+  const hasBrandCredentialPath = Boolean(
+    mismatchedBrand && (pageInfo.hasPasswordField || pageInfo.hasCreditCard || pageInfo.hasLoginForm || /login|sign.?in|prihl[aá]s|verify|overiť|account|payment|platba/i.test(`${final.pathname}\n${pageInfo.title}\n${pageInfo.text}`))
+  )
   const hasLocaleMismatch = Boolean(
     pageInfo.pageLang &&
     localeHints.length > 0 &&
@@ -244,6 +333,16 @@ export function buildUrlHeuristics(originalUrl: string, finalUrl: string, pageIn
     reasons.push('Finálna stránka pôsobí ako generická homepage namiesto jasného cieľa kampane, čo znižuje dôveryhodnosť redirectu.')
   }
 
+  if (mismatchedBrand && (brandImpersonation || hasBrandCredentialPath)) {
+    score += 4
+    reasons.push(`Stránka sa hlási k značke ${mismatchedBrand.brand}, ale doména ${final.hostname} nie je medzi jej oficiálnymi doménami (${mismatchedBrand.officialDomains.join(', ')}).`)
+  }
+
+  if (hasBrandCredentialPath) {
+    score += 2
+    reasons.push('Odkaz zároveň smeruje na prihlásenie, overenie alebo platbu, čo pri neoficiálnej doméne výrazne zvyšuje riziko krádeže údajov.')
+  }
+
   return {
     originalHostname: original.hostname,
     finalHostname: final.hostname,
@@ -256,9 +355,15 @@ export function buildUrlHeuristics(originalUrl: string, finalUrl: string, pageIn
     hasFinanceLanguage,
     hasPublicFigureLanguage,
     hasLeadGenForm: pageInfo.hasLeadGenForm,
+    hasPasswordField: pageInfo.hasPasswordField,
+    hasCreditCard: pageInfo.hasCreditCard,
+    hasLoginForm: pageInfo.hasLoginForm,
     hasAggressiveTrackingPattern,
     hasLocaleMismatch,
     hasGenericHomepageTitle,
+    impersonatedBrand: mismatchedBrand?.brand ?? brandImpersonation?.brand,
+    officialDomainChecks,
+    hasBrandCredentialPath,
     score,
     reasons,
   }
@@ -279,6 +384,9 @@ export function buildUrlMetadata(heuristics: UrlHeuristics, fetchError: string, 
     hasLeadGenForm: heuristics.hasLeadGenForm,
     hasAggressiveTrackingPattern: heuristics.hasAggressiveTrackingPattern,
     hasLocaleMismatch: heuristics.hasLocaleMismatch,
+    impersonatedBrand: heuristics.impersonatedBrand,
+    officialDomainChecks: heuristics.officialDomainChecks,
+    hasBrandCredentialPath: heuristics.hasBrandCredentialPath,
     pageLang: info.pageLang,
     hasPasswordField: info.hasPasswordField,
     hasCreditCard: info.hasCreditCard,
@@ -288,41 +396,66 @@ export function buildUrlMetadata(heuristics: UrlHeuristics, fetchError: string, 
   }
 }
 
-function mergeReasons(primary: string[], extra: string[]) {
-  const merged: string[] = []
+export function applyUrlRiskOverrides(_analysis: AnalysisResult, heuristics: UrlHeuristics): AnalysisResult {
+  // A language model may be useful for explaining a message, but it must never
+  // decide that a URL is risky just because it is a URL. Link verdicts are based
+  // solely on observable redirect, domain and page signals collected above.
+  let riskLevel: RiskLevel = 'low'
 
-  for (const reason of [...extra, ...primary]) {
-    const normalized = reason.trim()
-    if (!normalized) continue
-    if (merged.some((existing) => existing.toLowerCase() === normalized.toLowerCase())) continue
-    merged.push(normalized)
-  }
+  const hasBrandCredentialRisk = Boolean(
+    heuristics.impersonatedBrand && (heuristics.hasBrandCredentialPath || heuristics.hasPasswordField || heuristics.hasCreditCard || heuristics.hasLoginForm)
+  )
 
-  return merged.slice(0, 8)
-}
-
-function maxRiskLevel(current: RiskLevel, minimum: RiskLevel): RiskLevel {
-  const rank: Record<RiskLevel, number> = { low: 0, medium: 1, high: 2 }
-  return rank[current] >= rank[minimum] ? current : minimum
-}
-
-export function applyUrlRiskOverrides(analysis: AnalysisResult, heuristics: UrlHeuristics): AnalysisResult {
-  let riskLevel = analysis.riskLevel
-  let recommendation = analysis.recommendation
-
-  if (heuristics.score >= 8) {
+  if (heuristics.score >= 8 || hasBrandCredentialRisk) {
     riskLevel = 'high'
-    recommendation = 'Neinvestujte, neregistrujte sa a nezadávajte kontaktné údaje. Overte si reklamu, verejnú osobu, cieľovú doménu aj firmu mimo pôvodnej platformy.'
-  } else if (heuristics.score >= 5) {
-    riskLevel = maxRiskLevel(riskLevel, 'medium')
-    recommendation = riskLevel === 'medium'
-      ? 'Pred akýmkoľvek klikom, registráciou alebo investovaním si overte pôvod reklamy, redirect domény, firmu a identitu propagovanej osoby mimo reklamy.'
-      : recommendation
+  } else if (heuristics.score >= 4) {
+    riskLevel = 'medium'
   }
+
+  const recommendation = riskLevel === 'high'
+    ? 'Na tejto stránke nezadávajte údaje ani platbu. Konkrétne signály nižšie si overte cez nezávislý oficiálny zdroj.'
+    : riskLevel === 'medium'
+      ? 'Pred prihlásením, platbou alebo odoslaním formulára si overte presnú doménu, prevádzkovateľa a cieľ presmerovania.'
+      : 'Kontrola nenašla kombináciu technických a obsahových signálov typickú pre phishing. Nejde však o garanciu bezpečnosti webu.'
+
+  const mismatch = heuristics.officialDomainChecks.find((check) => check.status === 'mismatch')
+  const officialMatch = heuristics.officialDomainChecks.find((check) => check.status === 'official')
+  const claimedIdentity = heuristics.impersonatedBrand
+    ? `Stránka sa vydáva alebo pôsobí ako ${heuristics.impersonatedBrand}.`
+    : officialMatch
+      ? `Doména sa zhoduje s evidovanou oficiálnou doménou značky ${officialMatch.brand}.`
+      : 'Prevádzkovateľa stránky sa z dostupných údajov nedá spoľahlivo potvrdiť.'
+  const requestedAction = heuristics.hasCreditCard
+    ? 'Zadať platobné údaje alebo uskutočniť platbu.'
+    : heuristics.hasPasswordField || heuristics.hasLoginForm
+      ? 'Prihlásiť sa alebo odovzdať prístupové údaje.'
+      : heuristics.hasLeadGenForm
+        ? 'Odoslať údaje cez formulár.'
+        : 'Navštíviť stránku; ďalšia požadovaná akcia nebola jednoznačne zistená.'
+  const consistency = mismatch
+    ? `Doména ${mismatch.hostname} sa nezhoduje s evidovanými oficiálnymi doménami značky ${mismatch.brand}.`
+    : officialMatch
+      ? `Doména ${officialMatch.hostname} sa zhoduje s evidovanou oficiálnou doménou značky ${officialMatch.brand}.`
+      : heuristics.redirectedToUnrelatedDomain
+        ? `Odkaz presmeroval z ${heuristics.originalHostname} na nesúvisiacu doménu ${heuristics.finalHostname}.`
+        : 'Nebola zistená overiteľná zhoda s konkrétnou oficiálnou identitou.'
+
+  const structuredReasons = [
+    `[IDENTITY] ${claimedIdentity}`,
+    `[REQUEST] ${requestedAction}`,
+    `[CONSISTENCY] ${consistency}`,
+    ...(heuristics.hasAggressiveTrackingPattern ? ['[SOCIAL] Stránka používa vzorec presmerovania alebo kampane, ktorý môže zakrývať pôvod požiadavky.'] : []),
+    ...heuristics.reasons.slice(0, 4).map((reason) => `[TECHNICAL] ${reason}`),
+  ]
 
   return {
     riskLevel,
-    reasons: mergeReasons(analysis.reasons, heuristics.reasons),
+    reasons: riskLevel === 'low'
+      ? [...structuredReasons,
+          'Nenašli sa presmerovania na nesúvisiacu doménu, imitácia známej značky ani kombinácia znakov typická pre phishing.',
+          ...(heuristics.hasFinanceLanguage ? ['Stránka obsahuje finančnú tematiku; sama osebe to nie je dôkaz podvodu.'] : []),
+        ]
+      : structuredReasons,
     recommendation,
   }
 }

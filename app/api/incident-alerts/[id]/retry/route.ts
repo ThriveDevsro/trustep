@@ -61,7 +61,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       source: (requestRecord?.source || alert.source) as RequestSource,
       riskLevel: (requestRecord?.risk_level || alert.risk_level) as RiskLevel,
       reasons: Array.isArray(requestRecord?.reasons) ? requestRecord.reasons : ['Retry alert delivery'],
-      snippet: requestRecord?.text || 'Retry externého alertu z TrustStep delivery logu.',
+      snippet: requestRecord?.text || 'Retry externého alertu z FeelsOdd delivery logu.',
       status: (requestRecord?.status || 'pending') as RequestStatus,
       phoneFrom: requestRecord?.phone_from || undefined,
       throwOnError: true,

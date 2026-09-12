@@ -35,9 +35,9 @@ export async function sendApprovalEmail({
   const riskLabel = riskLevel === 'high' ? 'VYSOKÉ' : riskLevel === 'medium' ? 'STREDNÉ' : 'NÍZKE'
 
   await resend.emails.send({
-    from: 'TrustStep <noreply@truststep.app>',
+    from: 'FeelsOdd <noreply@truststep.app>',
     to,
-    subject: `[TrustStep] Žiadosť o overenie — riziko: ${riskLabel}`,
+    subject: `[FeelsOdd] Žiadosť o overenie — riziko: ${riskLabel}`,
     html: `
 <!DOCTYPE html>
 <html>
@@ -45,7 +45,7 @@ export async function sendApprovalEmail({
 <body style="font-family:Inter,sans-serif;background:#F9FAFB;margin:0;padding:24px;">
   <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1)">
     <div style="background:#0A0F1E;padding:24px 32px;display:flex;align-items:center;gap:12px">
-      <span style="color:#3B82F6;font-size:20px;font-weight:700">TrustStep</span>
+      <span style="color:#3B82F6;font-size:20px;font-weight:700">FeelsOdd</span>
     </div>
     <div style="padding:32px">
       <h2 style="margin:0 0 8px;color:#111827;font-size:20px">Žiadosť o overenie podozrivej inštrukcie</h2>
@@ -63,11 +63,20 @@ export async function sendApprovalEmail({
         <a href="${rejectUrl}" style="display:inline-block;background:#EF4444;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px">✗ Zamietnuť</a>
       </div>
 
-      <p style="margin:24px 0 0;color:#9CA3AF;font-size:12px">Táto správa bola automaticky vygenerovaná systémom TrustStep. ID žiadosti: ${requestId}</p>
+      <p style="margin:24px 0 0;color:#9CA3AF;font-size:12px">Táto správa bola automaticky vygenerovaná systémom FeelsOdd. ID žiadosti: ${requestId}</p>
     </div>
   </div>
 </body>
 </html>`,
+  })
+}
+
+export async function sendTeamInviteEmail({ to, companyName, role, inviteUrl }: { to: string; companyName: string; role: 'admin' | 'member'; inviteUrl: string }) {
+  const resend = getResendClient()
+  await resend.emails.send({
+    from: 'FeelsOdd <noreply@truststep.app>', to,
+    subject: `Pozvánka do tímu ${companyName} v FeelsOdd`,
+    html: `<div style="font-family:Inter,Arial,sans-serif;max-width:560px;margin:auto;padding:28px"><h1 style="color:#0b2854">Pozvánka do FeelsOdd</h1><p>Boli ste pozvaný do tímu <strong>${companyName}</strong> ako ${role === 'admin' ? 'administrátor' : 'zamestnanec'}.</p><p><a href="${inviteUrl}" style="display:inline-block;background:#0b2854;color:#fff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:700">Prijať pozvánku</a></p><p style="color:#64748b;font-size:13px">Ak ešte nemáte účet, po otvorení odkazu si ho jednoducho vytvoríte týmto e-mailom.</p></div>`,
   })
 }
 
@@ -95,9 +104,9 @@ export async function sendDailyDigestEmail({
   const inboxesUrl = appUrl ? `${appUrl}/inboxes` : ''
 
   await resend.emails.send({
-    from: 'TrustStep <noreply@truststep.app>',
+    from: 'FeelsOdd <noreply@truststep.app>',
     to,
-    subject: `[TrustStep] Denný digest — ${companyName}`,
+    subject: `[FeelsOdd] Denný digest — ${companyName}`,
     html: `
 <!DOCTYPE html>
 <html>
@@ -105,7 +114,7 @@ export async function sendDailyDigestEmail({
 <body style="font-family:Inter,sans-serif;background:#F8FAFC;margin:0;padding:24px;">
   <div style="max-width:680px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08)">
     <div style="background:#0A0F1E;padding:24px 32px;color:#fff">
-      <div style="font-size:20px;font-weight:800">TrustStep</div>
+      <div style="font-size:20px;font-weight:800">FeelsOdd</div>
       <div style="margin-top:8px;font-size:14px;color:#CBD5E1">Denný bezpečnostný digest pre ${companyName}</div>
     </div>
     <div style="padding:28px 32px">

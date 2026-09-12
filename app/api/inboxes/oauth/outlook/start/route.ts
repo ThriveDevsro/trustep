@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
+import { getRequestAppUser } from '@/lib/server-auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -29,31 +30,35 @@ function getMicrosoftOauthConfig() {
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const inboxId = req.nextUrl.searchParams.get('inboxId')?.trim()
+    const user = await getRequestAppUser(req)
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const { inboxId: rawInboxId } = await req.json()
+    const inboxId = String(rawInboxId || '').trim()
     if (!inboxId) {
-      return NextResponse.redirect(new URL('/inboxes?oauth_error=missing_inbox&provider=outlook', req.url))
+      return NextResponse.json({ error: 'Chýba inbox.' }, { status: 400 })
     }
 
     const oauthConfig = getMicrosoftOauthConfig()
     if (!oauthConfig) {
-      return NextResponse.redirect(new URL('/inboxes?oauth_error=missing_microsoft_config&provider=outlook', req.url))
+      return NextResponse.json({ error: 'Microsoft pripojenie nie je nakonfigurované.' }, { status: 503 })
     }
 
     const supabase = createServiceClient()
     if (!supabase) {
-      return NextResponse.redirect(new URL('/inboxes?oauth_error=missing_supabase&provider=outlook', req.url))
+      return NextResponse.json({ error: 'Databáza nie je nakonfigurovaná.' }, { status: 503 })
     }
 
     const { data: inbox, error } = await supabase
       .from('connected_inboxes')
-      .select('id, provider, status')
+      .select('id, provider, status, company_id')
       .eq('id', inboxId)
+      .eq('company_id', user.id)
       .single()
 
     if (error || !inbox || inbox.provider !== 'outlook') {
-      return NextResponse.redirect(new URL('/inboxes?oauth_error=inbox_not_found&provider=outlook', req.url))
+      return NextResponse.json({ error: 'Schránka sa nenašla.' }, { status: 404 })
     }
 
     const state = crypto.randomUUID()
@@ -66,7 +71,7 @@ export async function GET(req: NextRequest) {
     authorizeUrl.searchParams.set('state', state)
     authorizeUrl.searchParams.set('prompt', 'select_account')
 
-    const response = NextResponse.redirect(authorizeUrl)
+    const response = NextResponse.json({ authorizeUrl: authorizeUrl.toString() })
     response.cookies.set(OAUTH_STATE_COOKIE, JSON.stringify({
       state,
       inboxId,
@@ -82,6 +87,6 @@ export async function GET(req: NextRequest) {
     return response
   } catch (error) {
     console.error('[outlook-oauth-start]', error)
-    return NextResponse.redirect(new URL('/inboxes?oauth_error=start_failed&provider=outlook', req.url))
+    return NextResponse.json({ error: 'Microsoft pripojenie sa nepodarilo spustiť.' }, { status: 500 })
   }
 }

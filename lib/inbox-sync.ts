@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { ImapFlow } from 'imapflow'
-import { analyzeForFraud } from '@/lib/ai'
+import { analyzeForFraudResilient } from '@/lib/ai'
 import { parseEml } from '@/lib/eml'
 import { maybeSendIncidentAlert } from '@/lib/incident-alerts'
 import { buildEmailAnalysisText, type ResendReceivedEmail } from '@/lib/inbound-email'
@@ -526,7 +526,7 @@ async function createEmailRequest(
   }
 
   const analysisText = buildEmailAnalysisText(email)
-  const analysis = await analyzeForFraud(analysisText)
+  const analysis = await analyzeForFraudResilient(analysisText)
   const approverToken = generateToken()
 
   const { data: request, error } = await supabase

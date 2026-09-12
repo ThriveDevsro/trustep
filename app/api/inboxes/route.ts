@@ -20,14 +20,13 @@ export async function GET(req: NextRequest) {
     if (!companyId) {
       return NextResponse.json({ error: 'Chýba companyId.' }, { status: 400 })
     }
+    const user = await getRequestAppUser(req)
+    if (!user || user.id !== companyId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
     const supabase = createServiceClient()
     if (!supabase) {
-      const user = await getRequestAppUser(req)
-      if (!user || user.id !== companyId) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-      }
-
       const [inboxes, health] = await Promise.all([
         listDemoInboxes(companyId),
         buildDemoInboxHealth(companyId),
@@ -127,7 +126,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const companyId = String(body.companyId || '').trim()
     const provider = String(body.provider || '').trim() as InboxProvider
-    const emailAddress = String(body.emailAddress || '').trim().toLowerCase()
+    const requestedEmailAddress = String(body.emailAddress || '').trim().toLowerCase()
     const displayName = String(body.displayName || '').trim()
     const scanMode = String(body.scanMode || 'auto').trim()
     const imapHost = String(body.imapHost || '').trim()
@@ -136,8 +135,18 @@ export async function POST(req: NextRequest) {
     const imapUsername = String(body.imapUsername || '').trim()
     const imapPassword = String(body.imapPassword || '').trim()
 
-    if (!companyId || !VALID_PROVIDERS.has(provider) || !emailAddress) {
+    if (!companyId || !VALID_PROVIDERS.has(provider)) {
       return NextResponse.json({ error: 'Chýbajú povinné polia.' }, { status: 400 })
+    }
+    const user = await getRequestAppUser(req)
+    if (!user || user.id !== companyId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    // OAuth returns the final mailbox address in its callback. Until then we use
+    // the signed-in address, so Google/Microsoft can be connected in one click.
+    const emailAddress = requestedEmailAddress || (provider === 'imap' ? '' : user.email.trim().toLowerCase())
+    if (!emailAddress) {
+      return NextResponse.json({ error: 'Pre túto schránku je potrebná e-mailová adresa.' }, { status: 400 })
     }
 
     if (!VALID_SCAN_MODES.has(scanMode)) {
@@ -152,11 +161,6 @@ export async function POST(req: NextRequest) {
 
     const supabase = createServiceClient()
     if (!supabase) {
-      const user = await getRequestAppUser(req)
-      if (!user || user.id !== companyId) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-      }
-
       const inbox = await createDemoInbox({
         companyId,
         provider,

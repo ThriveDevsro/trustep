@@ -1,65 +1,72 @@
-import Link from 'next/link'
-import { BrandLogo } from '@/components/BrandLogo'
+import Link from "next/link";
+import { BrandLogo } from "@/components/BrandLogo";
 
-const PRODUCT_LINKS = [
-  { href: '/submit', label: 'Overiť správu' },
-  { href: '/link-check', label: 'Overiť link' },
-]
-
-const COMPANY_LINKS = [
-  { href: '/pre-ludi', label: 'Pre ľudí' },
-]
+const PUBLIC_LINKS = [
+  { href: "/ako-to-funguje", label: "Ako to funguje" },
+  { href: "/pre-firmy", label: "Riešenie" },
+  { href: "/cennik", label: "Cenník" },
+];
 
 export function Footer() {
   return (
-    <footer className="bg-[#111827] text-white">
-      <div className="mx-auto max-w-[1280px] px-6 lg:px-8">
-        <div className="grid gap-14 py-16 md:grid-cols-[1.35fr_0.65fr_0.65fr] md:py-20">
+    <footer className="border-t border-[#1E293B] bg-[#020617] text-white">
+      <div className="mx-auto max-w-[1200px] px-5 sm:px-8">
+        <div className="grid gap-14 py-16 md:grid-cols-[1.35fr_0.65fr] md:py-[72px]">
           <div>
-            <Link href="/" className="inline-flex transition-opacity hover:opacity-75">
+            <Link
+              href="/"
+              className="inline-flex transition-opacity hover:opacity-75"
+            >
               <BrandLogo theme="light" className="text-4xl sm:text-5xl" />
             </Link>
-            <p className="mt-7 max-w-md text-sm font-medium leading-7 text-slate-400">
-              Zrozumiteľný druhý názor na podozrivé správy, odkazy, faktúry a platobné pokyny
+            <p className="mt-6 max-w-md text-sm leading-7 text-slate-400">
+              Overte, kto je za komunikáciou, skôr než podľa nej konáte.
             </p>
-            <a href="mailto:hello@truststep.sk" className="mt-7 inline-block text-sm font-extrabold text-white transition-colors hover:text-[#ff4f00]">
+            <a
+              href="mailto:hello@truststep.sk"
+              className="mt-6 inline-block text-sm font-bold text-white transition-colors hover:text-[#22D3EE]"
+            >
               hello@truststep.sk
             </a>
           </div>
 
           <div>
-            <h3 className="text-xs font-extrabold text-slate-500">Produkt</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Navigácia</h3>
             <nav className="mt-5 space-y-3">
-              {PRODUCT_LINKS.map((link) => (
-                <Link key={link.href} href={link.href} className="block text-sm font-bold text-slate-300 transition-colors hover:text-white">
+              {PUBLIC_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block text-sm font-bold text-slate-300 transition-colors hover:text-white"
+                >
                   {link.label}
                 </Link>
               ))}
             </nav>
           </div>
 
-          <div>
-            <h3 className="text-xs font-extrabold text-slate-500">TrustStep</h3>
-            <nav className="mt-5 space-y-3">
-              {COMPANY_LINKS.map((link) => (
-                <Link key={link.href} href={link.href} className="block text-sm font-bold text-slate-300 transition-colors hover:text-white">
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
         </div>
 
         <div className="flex flex-col gap-5 border-t border-white/10 py-7 text-xs font-semibold text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-          <span>© {new Date().getFullYear()} TrustStep</span>
+          <span>© {new Date().getFullYear()} FeelsOdd</span>
           <div className="flex flex-wrap gap-x-6 gap-y-3">
-            <Link href="/ochrana-sukromia" className="transition-colors hover:text-white">Ochrana súkromia</Link>
-            <Link href="/podmienky-pouzivania" className="transition-colors hover:text-white">Podmienky používania</Link>
+            <Link
+              href="/ochrana-sukromia"
+              className="transition-colors hover:text-white"
+            >
+              Ochrana osobných údajov
+            </Link>
+            <Link
+              href="/podmienky-pouzivania"
+              className="transition-colors hover:text-white"
+            >
+              Podmienky používania
+            </Link>
           </div>
         </div>
       </div>
     </footer>
-  )
+  );
 }
 
-export default Footer
+export default Footer;
